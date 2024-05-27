@@ -5,10 +5,15 @@ import path from 'path';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  build: {
+    target: 'esnext',
+  },
   envDir: './',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@vis.gl/react-google-maps/examples.js':
+      'https://visgl.github.io/react-google-maps/scripts/examples.js'
     },
   },
   server: {

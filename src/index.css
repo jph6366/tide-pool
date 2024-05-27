@@ -1,4 +1,16 @@
 @import url('mapbox-gl/dist/mapbox-gl.css');
+#root {
+  width: 100vw;
+  height: 100vh;
+}
+.bg-teal-700 {
+  background-color: #007481;
+}
+.text-white {
+  color: #fff;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind/forms;
