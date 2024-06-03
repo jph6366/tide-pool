@@ -34,6 +34,7 @@
     "react-router-dom": "^6.8.1",
     "redux": "^4.2.1",
     "typesafe-actions": "^5.1.0",
+    "webr": "^0.3.3",
     "wrangler": "^3.57.1"
   },
   "devDependencies": {

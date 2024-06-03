@@ -4,6 +4,7 @@ import { Cruise, CruiseSelection } from '@/Domain/Model/Cruise';
 import Map, { Marker, Popup } from 'react-map-gl';
 import Pin from '@/Presentation/Map/Pin';
 import ControlPanel from '@/Presentation/Map/ControlPanelViewMapGL';
+import WebRView from '@/Presentation/WebR/WebRView';
 
 export default function CruiseListView() {
     const inputRef = useRef(null);
@@ -71,6 +72,7 @@ export default function CruiseListView() {
                 Descending</button>
             <button onClick={handleDescSortClick} type="button" className="bg-teal-700 text-white lg:text-5xl md:text-4xl font-bold rounded-b-full w-1/6 h-56 border text-center mr-2">
                 Ascending</button>
+                <WebRView />
                 <Map
             initialViewState={{
                 latitude: 37.805,

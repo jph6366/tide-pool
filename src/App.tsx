@@ -7,6 +7,7 @@ import './styles.css';
 import CruiseListView from './Presentation/Cruise/CruiseList/CruiseListView';
 // import VisGLReactGoogleMaps from './Presentation/Map/VisGLGoogleMaps';
 import MapBox from './Presentation/Map/MapGLMapbox';
+import VisGLReactGoogleMaps from './Presentation/Map/VisGLGoogleMaps';
 
 const MainContext = React.createContext({});
 
@@ -16,7 +17,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
       <BrowserRouter>
         <MainContext.Provider value={{}}>
           {/* <MapBox/> */}
-          {/* <VisGLReactGoogleMaps/>W */}
+          {/* <VisGLReactGoogleMaps/> */}
           <CruiseListView/>
         </MainContext.Provider>
       </BrowserRouter>
