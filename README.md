@@ -14,7 +14,10 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 ## To Do List
 
 - react-map-gl
-    - Redux, Cleaner Code, View DataSource
+    - Redux, Cleaner Code,
+    - Calculate corners from total area and center_x, _y and Draw Polygons
+    - parse MapStyles
+- CruiseList
     - Fix Bugs, Refine User Experience
 
 
