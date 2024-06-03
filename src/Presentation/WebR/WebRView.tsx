@@ -1,29 +1,35 @@
 import React, { useEffect, useState } from 'react'
+import Plotly from 'plotly.js'
 import { WebR } from 'webr';
-const webR = new WebR();
+const webR = new WebR({ interactive: false });
 
 async function getRandomNumbers() {
   await webR.init();
-  const result: any = await webR.evalR('rnorm(20,10,10)');
-  try {
-    return await result.toArray();
-  } finally {
-    webR.destroy(result);
-  }
+  const outElem = document.getElementById('out');
+  await webR.installPackages(['jsonlite', 'ggplot2', 'plotly'],{ mount: true });
+
+  const result: any = await webR.evalRString(`
+  library(plotly)
+  library(ggplot2)
+  
+  p <- ggplot(mpg, aes(displ, hwy, colour = class)) +
+    geom_point()
+  
+  plotly_json(p, pretty = FALSE)
+  `);
+  outElem?.replaceChildren();
+  Plotly.newPlot('out', JSON.parse(result), {});
 }
 
 function WebRView() {
-    const [ values, updateResult ] = useState(['Loading webR...']);
     useEffect(() => {
       (async ()=>{
-        const values = await getRandomNumbers();
-        updateResult(values);
+        await getRandomNumbers();
       })();
     }, []);
     return (
-      <div className="WebRView">
-        <p>Result of running R code:</p>
-        {values.map((n, idx) => <p key={idx}>{n}</p>)}
+    <div className='w-full'>
+        <pre><code id="out">Loading webR, please wait...</code></pre>
       </div>
     );
 }

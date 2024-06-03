@@ -13,8 +13,16 @@ export default defineConfig({
     alias: {
       '@': path.resolve(__dirname, './src'),
       '@vis.gl/react-google-maps/examples.js':
-      'https://visgl.github.io/react-google-maps/scripts/examples.js'
+      'https://visgl.github.io/react-google-maps/scripts/examples.js',
+      stream: 'stream-browserify'
     },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
+    }
   },
   server: {
     port: 4444,
