@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import useViewModel from './CruiseListViewModel';
 import { Cruise, CruiseSelection } from '@/Domain/Model/Cruise';
-import Map, { Marker, Popup } from 'react-map-gl';
+import Map, { Layer, Marker, Popup, Source } from 'react-map-gl';
 import Pin from '@/Presentation/Map/Pin';
 import ControlPanel from '@/Presentation/Map/ControlPanelViewMapGL';
 import WebRView from '@/Presentation/WebR/WebRView';
+import { clusterLayer, unclusteredPointLayer } from '@/Presentation/Map/ClusterLayers';
 
 export default function CruiseListView() {
     const inputRef = useRef(null);
@@ -72,61 +73,14 @@ export default function CruiseListView() {
                 Descending</button>
             <button onClick={handleDescSortClick} type="button" className="bg-teal-700 text-white lg:text-5xl md:text-4xl font-bold rounded-b-full w-1/6 h-56 border text-center mr-2">
                 Ascending</button>
-                <WebRView />
-                <Map
-            initialViewState={{
-                latitude: 37.805,
-                longitude: -122.447,
-                zoom: 15.5,
-            }}
-
-            style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
-            mapStyle={mapStyle && mapStyle.toJS()}
-            styleDiffing
-            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-            >
-            {
-                cruises.map((pin:Cruise, index:number) => { 
-                    return(
-
-                    <Marker
-                        key={`marker-${index}`}
-                        longitude={pin.center_x}
-                        latitude={pin.center_y}
-                        anchor="bottom"
-                        onClick={(e: { originalEvent: { stopPropagation: () => void; }; }) => {
-                            e.originalEvent.stopPropagation();
-                            setPopupInfo(pin);
-                        }}
-                    >
-                        <Pin />
-                    </Marker>
-
-                )}
-            )
-            }
-                    {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={popupInfo.center_x}
-            latitude={popupInfo.center_y}
-            onClose={() => setPopupInfo(undefined)}
-          >
-            <div>
-              {popupInfo.platform_id}, {popupInfo.created} |{' '}
-              <a
-                target="_new"
-                href={popupInfo.url}
-              >
-                Marine-Geo.org
-              </a>
-            </div>
-            <h3>Country: {popupInfo.flag_alt}</h3>
-          </Popup>
-        )}
-                <ControlPanel onChange={setMapStyle} />
-
-            </Map>  
+                 {/* if pins is not empty then render WebRView */}
+                {pins.length > 0 && <WebRView pins={pins} />}
+                <div className='text-2xl font-extrabold w-7/12 break-words'>The Global Multi-Resolution Topography <a className='text-blue underline-offset-auto' href='https://www.gmrt.org/about/index.php'>(GMRT)</a> Synthesis is a multi-resolution 
+                Digital Elevation Model (DEM) maintained in three projections and managed with a scalable global architecture that offers infrastructure 
+                for accessing the DEM as grids, images, points and profiles.</div>
+                <br/>
+                <div className='text-4xl font-extrabold w-full break-words'>GMRT Cruise Info provides access to cruise metadata from the GMRT Synthesis.</div>
+                <br/>
 
             <div className='text-4xl font-extrabold w-7/12 break-words'>AGGREGATE TOTAL AREA: {totalArea}</div>
             

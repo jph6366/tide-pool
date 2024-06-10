@@ -24,6 +24,8 @@
     "@vis.gl/react-google-maps": "latest",
     "buffer": "^6.0.3",
     "immutable": "^4.3.6",
+    "jotai": "^2.8.3",
+    "jotai-redux": "^0.3.0",
     "mapbox-gl": "^2.12.0",
     "moment": "^2.29.4",
     "plotly.js": "^2.33.0",
