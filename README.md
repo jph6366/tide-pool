@@ -10,6 +10,10 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [Jotai](https://jotai.org/) - Atomic approach to global React state management
 - [TailwindCSS](https://tailwindcss.com) - CSS utilities
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
+
+
+  ![image](https://github.com/jph6366/tide-pool/assets/42678151/33226219-cea8-4e07-ad08-fc7d582c5d09)
+
   
 ## To Do List
 
