@@ -3,7 +3,7 @@
 ## About
 
 Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 18](https://reactjs.org/).
-The goal of this project is to be a framework for providers of hi-resolution bathymetry data
+- The goal of this project is to be a framework for providers of hi-resolution bathymetry data
 
 **Noteworthy Tooling Included:**
 
