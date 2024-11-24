@@ -25,10 +25,11 @@ export default function CruiseListViewModel() {
 
 
     async function getCruises() {
-        var updated = await getCruisesUseCase.invoke();
+        const updated = await getCruisesUseCase.invoke();
         setCruises(updated);
         setTotalArea(await getAggregateTotalAreaUseCase.invoke(updated));
-        var tmp_pins = updated.map((cruise: Cruise, index: number) => (
+        // eslint-disable-next-line camelcase
+        const tmp_pins = updated.map((cruise: Cruise, index: number) => (
                [cruise.center_x, cruise.center_y]
             ));
         setPins(tmp_pins);
@@ -45,11 +46,11 @@ export default function CruiseListViewModel() {
 
     async function filterCruises(search: string, toggle: number) {
         if (toggle) {
-            var updated = await cruises.filter((cruise) => cruise.entry_id.includes(search));
+            const updated = cruises.filter((cruise) => cruise.entry_id.includes(search));
             setCruises(updated)
             setTotalArea(await getAggregateTotalAreaUseCase.invoke(updated));
         } else {
-            var updated = await cruises.filter((cruise) => cruise.platform_id.includes(search));
+            const updated = cruises.filter((cruise) => cruise.platform_id.includes(search));
             setCruises(updated)
             setTotalArea(await getAggregateTotalAreaUseCase.invoke(updated));
         }

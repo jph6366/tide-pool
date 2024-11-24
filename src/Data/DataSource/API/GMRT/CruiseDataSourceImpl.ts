@@ -16,7 +16,7 @@ export default class CruiseDataSourceImpl implements CruiseDataSource {
     }
 
     async sortCruises(sort: string): Promise<CruiseEntity[]> {
-        var cruises = await this.getCruises();
+        let cruises = await this.getCruises();
         if (sort === 'ascending') {
             cruises = cruises.sort((a:CruiseEntity, b:CruiseEntity) => {
                 const dateA = moment(a.created, 'YYYY-MM-DD')

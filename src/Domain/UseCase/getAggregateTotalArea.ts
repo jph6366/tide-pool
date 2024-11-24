@@ -2,7 +2,7 @@ import { Cruise } from '../Model/Cruise';
 import { CruiseRepository } from '../Repository/CruiseRepository';
 
 export interface GetAggregateTotalAreaUseCase {
-    invoke: (cruises: Cruise[]) => Promise<Number>
+    invoke: (cruises: Cruise[]) => Promise<number>
 }
 
 export class GetAggregateTotalArea implements GetAggregateTotalAreaUseCase {
