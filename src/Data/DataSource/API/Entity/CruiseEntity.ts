@@ -1,3 +1,8 @@
+import { GetCruises } from '@/Domain/UseCase/getCruises'
+import { atomWithQuery } from 'jotai-tanstack-query'
+import { CruiseRepositoryImpl } from '@/Data/Repository/CruiseRepositoryImpl';
+import CruiseDataSourceImpl from '../GMRT/CruiseDataSourceImpl';
+
 export interface CruiseEntity {
     entry_id: string
     survey_id: string
@@ -30,3 +35,15 @@ export interface CruiseEntity {
     track_length: number
     file_count: number
 }
+
+
+const cruisesDataSourceImpl = new CruiseDataSourceImpl();
+const cruisesRepositoryImpl = new CruiseRepositoryImpl(cruisesDataSourceImpl);
+const getCruisesUseCase = new GetCruises(cruisesRepositoryImpl);
+
+export const CruiseAtom = atomWithQuery(() => ({
+    queryKey: ['cruises'],
+    queryFn: async (): Promise<CruiseEntity[]> => {
+        return getCruisesUseCase.invoke()
+    },
+}))

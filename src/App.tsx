@@ -5,10 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Store from './Presentation/ReduxStore/Store';
 import './styles.css';
 import CruiseListView from './Presentation/Cruise/CruiseList/CruiseListView';
-// import VisGLReactGoogleMaps from './Presentation/Map/VisGLGoogleMaps';
-import MapBox from './Presentation/Map/MapGLMapbox';
-import VisGLReactGoogleMaps from './Presentation/Map/VisGLGoogleMaps';
-import MapGLCluster from './Presentation/Map/MapGLCluster';
+import '/node_modules/flag-icons/css/flag-icons.min.css';
 
 const MainContext = React.createContext({});
 
@@ -17,9 +14,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <Provider store={Store}>
       <BrowserRouter>
         <MainContext.Provider value={{}}>
-          {/* <MapGLCluster/> */}
-          {/* <MapBox/> */}
-          {/* <VisGLReactGoogleMaps/> */}
           <CruiseListView/>
         </MainContext.Provider>
       </BrowserRouter>
