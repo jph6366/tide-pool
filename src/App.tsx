@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import Store from './Presentation/ReduxStore/Store';
-import './styles.css';
+import './index.css';
 import CruiseListView from './Presentation/Cruise/CruiseList/CruiseListView';
 import '/node_modules/flag-icons/css/flag-icons.min.css';
 

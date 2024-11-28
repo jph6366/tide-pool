@@ -3,17 +3,20 @@ import { Cruise } from '@/Domain/Model/Cruise';
 import CruiseView from './CruiseView';
 import { useEffect } from 'react';
 import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { atom, useAtom } from 'jotai';
 
-export default function TableView() {
+
+export default function UnderReviewTableView() {
 
     const {
         filterCruises,
         aggregateTotalArea,
-        data,
+        underReviewCruises,
         setTotalArea,
         setStatus
     } = useViewModel();
 
+    const [data] = useAtom(atom(underReviewCruises));
 
 
     useEffect( () => {

@@ -2,7 +2,7 @@ import { Cruise } from '../Model/Cruise';
 import { CruiseRepository } from '../Repository/CruiseRepository';
 
 export interface GetCruisesUseCase {
-    invoke: () => Promise<Cruise[]>
+    invoke: (status: string) => Promise<Cruise[]>
 }
 
 export class GetCruises implements GetCruisesUseCase {
@@ -11,7 +11,7 @@ export class GetCruises implements GetCruisesUseCase {
         this.cruiseRepo = _cruiseRepo
     }
 
-    async invoke() {
-        return this.cruiseRepo.getCruises();
+    async invoke(status: string) {
+        return this.cruiseRepo.getCruises(status);
     }
 }

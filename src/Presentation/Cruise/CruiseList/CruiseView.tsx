@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { Cruise } from '@/Domain/Model/Cruise';
 import useViewModel from './Control/CruiseTable';
 
@@ -13,6 +12,7 @@ export default function CruiseView({cruise: cruise}:CruiseViewProps) {
                 const {
                     getCountryCode,
                 } = useViewModel();
+
 
                         return (
                             <tr tabIndex={0} className="focus:outline-none h-16 border border-gray-100 rounded">
@@ -40,10 +40,28 @@ export default function CruiseView({cruise: cruise}:CruiseViewProps) {
                                         </a>
                                     </div>
                                 </td>
-                                <div className="flex items-center pl-5">
-                                        <span className={'fi fi-' +  getCountryCode(cruise.flag_alt) }></span>
-                                        <p className="text-sm leading-none text-gray-600 ml-2">{cruise.chief}</p>
-                                </div>
+                                <td>
+                                    <div className="flex items-center pl-5">
+                                            <span className={'fi fi-' +  getCountryCode(cruise.flag_alt) }></span>
+                                            <p className="text-sm leading-none text-gray-600 ml-2">{cruise.chief}{' (' + cruise.year + ')'}</p>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div className="flex items-center pl-5">
+                                            
+                                            <p className="text-sm leading-none text-gray-600 ml-2">{cruise.platform_id}{' (' + cruise.device_make +' '+ cruise.device_model + ')'}</p>
+                                            <br/>
+                                            GMRTv{cruise.gmrt_version_number}
+                                    </div>
+                                </td>     
+                                <td>
+                                    <div className="flex items-center pl-5">
+                                            
+                                    processed by <p className="text-sm leading-none text-gray-600 ml-2"> {cruise.data_processor_organization + ' '} </p>
+                                    <br/>
+                                    Total Area Mapped: {cruise.total_area} km&sup2; | {cruise.file_count} Files
+                                    </div>
+                                </td>                    
                             </tr>
                         )
 }

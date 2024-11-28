@@ -1,74 +1,60 @@
-import { CruiseAtom, CruiseEntity } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { CruiseAtomWithCache, rejectedCruiseAtomWithCache, CruiseStatus, cruiseStatusAtom, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import { atom, useAtom } from 'jotai';
 import { Cruise } from '@/Domain/Model/Cruise';
 import moment from 'moment';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as countries from 'i18n-iso-countries';
 import * as en from  '../../../../../node_modules/i18n-iso-countries/langs/en.json';
 
 
 export default function ViewModel() {
 
-    const [{data, isPending},     ] = useAtom(CruiseAtom);
-    const [cruises, setTable ] = useAtom(atom(data))
+    const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom)
+
+    const [cache] = useAtom(CruiseAtomWithCache);
+    const [rejectedCruises] = useAtom(rejectedCruiseAtomWithCache);
+    const [underReviewCruises] = useAtom(underReviewCruiseAtomWithCache)
+
+    const [data] = useAtom(atom(cache))
+    
     const [aggregateTotalArea, setTotalArea] = useState(0);
 
-
-    useEffect(() => {
-        setTotalArea(getAggregateTotalArea());
-    }, [cruises]);
-
-
-    function sortCruises(sort: string,): Cruise[] | CruiseEntity[] | undefined {
-        if (cruises){
-            if (sort === 'ascending') {
-                setTable(cruises.sort((a:Cruise, b:Cruise) => {
-                    const dateA = moment(a.created, 'YYYY-MM-DD')
-                    const dateB = moment(b.created, 'YYYY-MM-DD')
-                    return moment.utc(dateA).diff(dateB);
-                }))
-            } else if (sort === 'descending') {
-                setTable(cruises.sort((a:Cruise, b:Cruise) => {
-                    const dateA = moment(a.created, 'YYYY-MM-DD')
-                    const dateB = moment(b.created, 'YYYY-MM-DD')
-                    return moment.utc(dateB).diff(dateA);
-                }))
-            }
+    function sortCruises(sort: string) {
+        if (sort === 'ascending') {
+            data.sort((a:Cruise, b:Cruise) => {
+                const dateA = moment(a.created, 'YYYY-MM-DD')
+                const dateB = moment(b.created, 'YYYY-MM-DD')
+                return moment.utc(dateA).diff(dateB);
+            })
+        } else if (sort === 'descending') {
+            data.sort((a:Cruise, b:Cruise) => {
+                const dateA = moment(a.created, 'YYYY-MM-DD')
+                const dateB = moment(b.created, 'YYYY-MM-DD')
+                return moment.utc(dateB).diff(dateA);
+            })
         }
-        setTotalArea(getAggregateTotalArea());
-        return cruises;
-    }
-
-
-    function getAggregateTotalArea(): number {
-        if (cruises){
-        return cruises.filter(a => a.total_area !== null && !isNaN(a.total_area))
-        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-        }
-        return aggregateTotalArea
     }
 
     async function filterCruises(search: string) {
-        if(data && cruises) {
-                setTable(data)
-                filterInPlace(cruises, (cruise) => cruise.platform_id.includes(search))
-                // setTable(cruises.filter((cruise) => cruise.platform_id.includes(search)))
-                setTotalArea(getAggregateTotalArea());
+        if(data) {
+                filterInPlace(data, (cruise) => cruise.platform_id.includes(search))
+                const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
+                .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+                setTotalArea(area);
             }
         
     }
 
-    function filterInPlace<T>(array: Array<T>, condition: (value: T) => boolean)
-    {
-        let nextPlace = 0;
+    function filterInPlace<T>(array: Array<T>, condition: (value: T) => boolean): void {
+        let writeIndex = 0;  // Tracks where to place the next matching element
     
-        for (const value of array)
-        {
-            if (condition(value))
-                array[nextPlace++] = value;
+        for (let readIndex = 0; readIndex < array.length; readIndex++) {
+            if (condition(array[readIndex])) {
+                // Swap to move the matching element to the front
+                [array[writeIndex], array[readIndex]] = [array[readIndex], array[writeIndex]];
+                writeIndex++;  // Move the write pointer to the next position
+            }
         }
-    
-        array.splice(nextPlace);
     }
 
     function getCountryCode(name: string) {
@@ -82,9 +68,13 @@ export default function ViewModel() {
         filterCruises,
         sortCruises,
         aggregateTotalArea,
-        getAggregateTotalArea,
         getCountryCode,
-        cruises,
+        data,
+        rejectedCruises,
+        underReviewCruises,
+        setTotalArea,
+        cruiseStatus, 
+        setStatus
     };
     
 

@@ -3,18 +3,20 @@ import { Cruise } from '@/Domain/Model/Cruise';
 import CruiseView from './CruiseView';
 import { useEffect } from 'react';
 import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { atom, useAtom } from 'jotai';
 
-export default function TableView() {
+
+export default function RejectedTableView() {
 
     const {
         filterCruises,
         aggregateTotalArea,
-        data,
+        rejectedCruises,
         setTotalArea,
         setStatus
     } = useViewModel();
 
-
+    const [data] = useAtom(atom(rejectedCruises));
 
     useEffect( () => {
         const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
@@ -28,10 +30,9 @@ export default function TableView() {
         event.preventDefault()
     };
 
-
     return (
         <div>
-            <form id='filter' onSubmit={handleFilterChange} >   
+            <form onSubmit={handleFilterChange}>   
                 <label  className="mb-2 text-sm font-medium sr-only ">Search</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -39,7 +40,7 @@ export default function TableView() {
                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
-                    <input  type="text" id="message" className="block overflow-visible p-4 pl-10 text-sm  border rounded-lg" placeholder="Filter" required/>
+                    <input type="text" id="message" className="block overflow-visible p-4 pl-10 text-sm  border rounded-lg" placeholder="Filter" required/>
                 </div>
             </form>     
             <div className='bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10'>

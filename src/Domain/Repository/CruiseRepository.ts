@@ -1,5 +1,5 @@
 import { Cruise } from '../Model/Cruise';
 
 export interface CruiseRepository {
-    getCruises(): Promise<Cruise[]>
+    getCruises(status: string): Promise<Cruise[]>
 }

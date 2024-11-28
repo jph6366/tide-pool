@@ -4,9 +4,9 @@ import { CruiseEntity } from '../Entity/CruiseEntity';
 export default class CruiseDataSourceImpl implements CruiseDataSource {
 
 
-    async getCruises(): Promise<CruiseEntity[]> {
+    async getCruises(status: string): Promise<CruiseEntity[]> {
 
-        const cruisesUrl = 'https://www.gmrt.org/services/GmrtCruises.php';
+        const cruisesUrl = 'https://www.gmrt.org/services/GmrtCruises.php' + status;
         
         try {
             const res: Response = await fetch(cruisesUrl);
@@ -22,5 +22,6 @@ export default class CruiseDataSourceImpl implements CruiseDataSource {
             throw error;
         }
     }
+    
 
 }
