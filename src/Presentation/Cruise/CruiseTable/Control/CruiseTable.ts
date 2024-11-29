@@ -9,14 +9,10 @@ import * as en from  'i18n-iso-countries/langs/en.json';
 
 export default function ViewModel() {
 
-    const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom)
+    const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom);
     const [isOpen, setIsOpen] = useState(false);
     const [filter, setFilter] = useState('platform_id');
-    const [cache] = useAtom(CruiseAtomWithCache);
-    const [rejectedCruises] = useAtom(rejectedCruiseAtomWithCache);
-    const [underReviewCruises] = useAtom(underReviewCruiseAtomWithCache)
-
-    const [data] = useAtom(atom(cache))
+    const [data] = useAtom(CruiseAtomWithCache);
     
     const [aggregateTotalArea, setTotalArea] = useState(0);
 
@@ -72,8 +68,6 @@ export default function ViewModel() {
         aggregateTotalArea,
         getCountryCode,
         data,
-        rejectedCruises,
-        underReviewCruises,
         setTotalArea,
         cruiseStatus, 
         setStatus,

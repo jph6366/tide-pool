@@ -1,27 +1,64 @@
 import useViewModel from '../Control/CruiseTable';
 import { Cruise } from '@/Domain/Model/Cruise';
 import CruiseView from './CruiseView';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export default function TableView() {
+interface TableProps {
+    filterCruises: any
+    aggregateTotalArea: any
+    data: Cruise[]
+    setTotalArea: any
+    setFilter: any
+    isOpen: boolean
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+}
 
-    const {
-        filterCruises,
-        aggregateTotalArea,
-        data,
-        setTotalArea,
-        setFilter,
-        isOpen, 
-        setIsOpen
-    } = useViewModel();
+export default function TableView( {
+    filterCruises,
+    aggregateTotalArea,
+    data,
+    setTotalArea,
+    setFilter,
+    isOpen, 
+    setIsOpen
+} : TableProps ) {
+
+    // const {
+    //     filterCruises,
+    //     aggregateTotalArea,
+    //     data,
+    //     setTotalArea,
+    //     setFilter,
+    //     isOpen, 
+    //     setIsOpen
+    // } = useViewModel();
+    const [itemsToShow, setItemsToShow] = useState(13); // Default number of items
+    const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
 
 
+    const handleScroll = () => {
+        const container = containerRef.current;
+        if (container) {
+            // Check if scrolled to the bottom
+            if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+                setItemsToShow((prev) => prev + 100); // Load 5 more items
+            }
+            // Optional: Detect scrolling up to reduce items if necessary
+        }
+    };
 
-    useEffect( () => {
-        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
-        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-        setTotalArea(area);
-    }, [data,isOpen])
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener('scroll', handleScroll);
+        }
+        return () => {
+            if (container) {
+                container.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, []);
+
 
     const handleFilterChange = (event: React.FormEvent<HTMLFormElement>) => {
         const searchInput = event.currentTarget.elements[0] as HTMLInputElement;
@@ -35,7 +72,7 @@ export default function TableView() {
 
 
     return (
-        <div className="relative block">
+        <div ref={containerRef} className="relative block   overflow-y-auto">
             <form id='filter' onSubmit={handleFilterChange} >   
                 <label  className="mb-2 text-sm font-medium sr-only ">Search</label>
                 <div className="relative">
@@ -116,18 +153,16 @@ export default function TableView() {
                             <th scope="col"  className='table-auto'>
                                 <p>Total Aggregate Area: {aggregateTotalArea} </p>  
                             </th>
-                        {/* {Reflect.ownKeys(cruises[0]).map( (prop, i) => (  
-                                <th key={i} scope="col" className="table-auto">
-                                    {prop.toString()}
-                                </th>
-                        ))} */}
                         </tr>
                     </thead>
                     <tbody>
                         {data.map((cruise: Cruise, i:number) => {
-                            return (
-                                <CruiseView key={i} cruise={cruise} />
-                            );
+                            if(i < itemsToShow) {
+                                return (
+                                    <CruiseView key={i} cruise={cruise} />
+                                );
+                            }
+                            
                         })}
                     </tbody>
                 </table>) : (

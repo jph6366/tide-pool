@@ -1,25 +1,68 @@
 import useViewModel from '../Control/CruiseTable';
 import { Cruise } from '@/Domain/Model/Cruise';
 import CruiseView from './CruiseView';
-import { useEffect } from 'react';
-import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { useEffect, useRef, useState } from 'react';
+import { CruiseStatus, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import { atom, useAtom } from 'jotai';
 
+interface TableProps {
+    filter: any
+    aggregateTotalArea: any
+    setTotalArea: any
+    setFilter: any
+    isOpen: boolean
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
+    filterInPlace: any
+}
 
-export default function UnderReviewTableView() {
+export default function UnderReviewTableView( {
+    filter,
+    aggregateTotalArea,
+    setTotalArea,
+    setFilter,
+    isOpen, 
+    setIsOpen,
+    filterInPlace
+} : TableProps ) {
 
-    const {
-        filterInPlace,
-        aggregateTotalArea,
-        underReviewCruises,
-        setTotalArea,
-        filter,
-        setFilter,
-        isOpen, 
-        setIsOpen
-    } = useViewModel();
+    // const {
+    //     filterInPlace,
+    //     aggregateTotalArea,
+    //     underReviewCruises,
+    //     setTotalArea,
+    //     filter,
+    //     setFilter,
+    //     isOpen, 
+    //     setIsOpen
+    // } = useViewModel();
+    const [itemsToShow, setItemsToShow] = useState(13); // Default number of items
+    const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
 
-    const [data] = useAtom(atom(underReviewCruises));
+
+    const handleScroll = () => {
+        const container = containerRef.current;
+        if (container) {
+            // Check if scrolled to the bottom
+            if (container.scrollHeight - container.scrollTop === container.clientHeight) {
+                setItemsToShow((prev) => prev + 100); // Load 5 more items
+            }
+            // Optional: Detect scrolling up to reduce items if necessary
+        }
+    };
+
+    useEffect(() => {
+        const container = containerRef.current;
+        if (container) {
+            container.addEventListener('scroll', handleScroll);
+        }
+        return () => {
+            if (container) {
+                container.removeEventListener('scroll', handleScroll);
+            }
+        };
+    }, []);
+
+    const [data] = useAtom(underReviewCruiseAtomWithCache);
 
     async function filterCruises(search: string) {
         if(data) {
@@ -30,12 +73,6 @@ export default function UnderReviewTableView() {
             }
         
     }
-
-    useEffect( () => {
-        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
-        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-        setTotalArea(area);
-    }, [data])
 
     const handleFilterChange = (event: React.FormEvent<HTMLFormElement>) => {
         const searchInput = event.currentTarget.elements[0] as HTMLInputElement;
@@ -49,7 +86,7 @@ export default function UnderReviewTableView() {
 
 
     return (
-        <div className="relative block">
+        <div ref={containerRef} className="relative block">
             <form id='filter' onSubmit={handleFilterChange} >   
                 <label  className="mb-2 text-sm font-medium sr-only ">Search</label>
                 <div className="relative">

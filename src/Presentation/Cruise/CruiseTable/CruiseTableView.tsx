@@ -11,7 +11,16 @@ export default function CruiseTableView() {
     const {
         sortCruises,
         cruiseStatus,
-        setStatus
+        setStatus,
+        filterCruises,
+        aggregateTotalArea,
+        data,
+        setTotalArea,
+        setFilter,
+        isOpen, 
+        setIsOpen,
+        filterInPlace, 
+        filter
     } = useViewModel();
 
     const [open, setOpen] = useState(false);
@@ -82,11 +91,23 @@ export default function CruiseTableView() {
                         </div>
                     </div>
                     {cruiseStatus == CruiseStatus.merged  ?(
-                        <TableView/>
+                        <TableView 
+                        filterCruises={filterCruises}  setFilter={setFilter}
+                        aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
+                        data={data}  
+                        isOpen={isOpen} setIsOpen={setIsOpen} />
                     ): cruiseStatus == CruiseStatus.underReview ?(
-                        <UnderReviewTableView/>
+                        <UnderReviewTableView 
+                        filter={filter} setFilter={setFilter}
+                        aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
+                        filterInPlace={filterInPlace}  
+                        isOpen={isOpen} setIsOpen={setIsOpen} />
                     ): (
-                        <RejectedTableView/>
+                        <RejectedTableView 
+                        filter={filter} setFilter={setFilter}
+                        aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
+                        filterInPlace={filterInPlace}  
+                        isOpen={isOpen} setIsOpen={setIsOpen}/>
                     )}
                     
                 </div>
