@@ -1,16 +1,17 @@
-import { CruiseAtomWithCache, rejectedCruiseAtomWithCache, CruiseStatus, cruiseStatusAtom, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { CruiseAtomWithCache, rejectedCruiseAtomWithCache, cruiseStatusAtom, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import { atom, useAtom } from 'jotai';
 import { Cruise } from '@/Domain/Model/Cruise';
 import moment from 'moment';
 import { useState } from 'react';
 import * as countries from 'i18n-iso-countries';
-import * as en from  '../../../../../node_modules/i18n-iso-countries/langs/en.json';
+import * as en from  'i18n-iso-countries/langs/en.json';
 
 
 export default function ViewModel() {
 
     const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom)
-
+    const [isOpen, setIsOpen] = useState(false);
+    const [filter, setFilter] = useState('platform_id');
     const [cache] = useAtom(CruiseAtomWithCache);
     const [rejectedCruises] = useAtom(rejectedCruiseAtomWithCache);
     const [underReviewCruises] = useAtom(underReviewCruiseAtomWithCache)
@@ -37,7 +38,7 @@ export default function ViewModel() {
 
     async function filterCruises(search: string) {
         if(data) {
-                filterInPlace(data, (cruise) => cruise.platform_id.includes(search))
+                filterInPlace(data, (cruise: any) => cruise[filter].includes(search))
                 const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
                 .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
                 setTotalArea(area);
@@ -66,6 +67,7 @@ export default function ViewModel() {
 
     return {
         filterCruises,
+        filterInPlace,
         sortCruises,
         aggregateTotalArea,
         getCountryCode,
@@ -74,7 +76,11 @@ export default function ViewModel() {
         underReviewCruises,
         setTotalArea,
         cruiseStatus, 
-        setStatus
+        setStatus,
+        isOpen,
+        setIsOpen,
+        filter,
+        setFilter
     };
     
 

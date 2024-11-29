@@ -1,5 +1,5 @@
 import { Cruise } from '@/Domain/Model/Cruise';
-import useViewModel from './Control/CruiseTable';
+import useViewModel from '../Control/CruiseTable';
 
 interface CruiseViewProps {
     cruise: Cruise;

@@ -1,14 +1,14 @@
 import { type } from 'arktype';
 
 // Define Latitude and Longitude using 'narrow' for custom constraints
-const Latitude = type('number').narrow((value, ctx) => {
+const Latitude = type('number').narrow((value:any , ctx:any ) => {
   if (value >= -90 && value <= 90) {
     return true;  // Valid latitude
   }
   return ctx.mustBe('between -90 and 90');  // Custom error message
 });
 
-const Longitude = type('number').narrow((value, ctx) => {
+const Longitude = type('number').narrow((value:any , ctx:any )=> {
   if (value >= -180 && value <= 180) {
     return true;  // Valid longitude
   }

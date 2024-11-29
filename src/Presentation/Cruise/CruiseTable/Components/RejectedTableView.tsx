@@ -1,20 +1,35 @@
-import useViewModel from './Control/CruiseTable';
+import useViewModel from '../Control/CruiseTable';
 import { Cruise } from '@/Domain/Model/Cruise';
 import CruiseView from './CruiseView';
 import { useEffect } from 'react';
 import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { atom, useAtom } from 'jotai';
 
-export default function TableView() {
+
+export default function RejectedTableView() {
 
     const {
-        filterCruises,
+        filterInPlace,
         aggregateTotalArea,
-        data,
+        rejectedCruises,
         setTotalArea,
-        setStatus
+        filter,
+        setFilter,
+        isOpen, 
+        setIsOpen
     } = useViewModel();
 
+    const [data] = useAtom(atom(rejectedCruises));
 
+    async function filterCruises(search: string) {
+        if(data) {
+                filterInPlace(data, (cruise:any ) => cruise[filter] !== null && cruise[filter].includes(search))
+                const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
+                .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+                setTotalArea(area);
+            }
+        
+    }
 
     useEffect( () => {
         const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
@@ -28,9 +43,13 @@ export default function TableView() {
         event.preventDefault()
     };
 
+    const toggleMenu = () => {
+        setIsOpen((prev) => !prev);
+    };
+
 
     return (
-        <div>
+        <div className="relative block">
             <form id='filter' onSubmit={handleFilterChange} >   
                 <label  className="mb-2 text-sm font-medium sr-only ">Search</label>
                 <div className="relative">
@@ -41,30 +60,49 @@ export default function TableView() {
                     </div>
                     <input  type="text" id="message" className="block overflow-visible p-4 pl-10 text-sm  border rounded-lg" placeholder="Filter" required/>
                 </div>
-            </form>     
+            </form>
+            <div
+                className="flex items-center space-x-1 cursor-pointer"
+                onClick={toggleMenu}
+            >
+                <span className="text-lg">Sort By</span>
+                <svg
+                className={`h-4 w-4 transform transition-transform ${
+                    isOpen ? 'rotate-180' : ''
+                }`}                
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                >
+                <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M19 9l-7 7-7-7"
+                />
+                </svg>
+            </div>
+            <div
+                className={`absolute mt-1  min-w-max shadow rounded bg-gray-300 border border-gray-400 transition-opacity duration-10 ease-in-out z-10 ${
+                isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+                }`}
+            >
+                <ul className="block text-right text-gray-900">
+                    { Reflect.ownKeys(data[0]).map( (prop, i) => {
+                        return (
+                            <li key={i}>
+                                <a  onClick={() => setFilter(prop.toString())} className="block px-3 py-2 hover:bg-gray-200">
+                                {prop.toString()}
+                                </a>
+                            </li>
+                            )
+                    }) }
+                    
+                </ul>
+            </div>
+                 <br/>  
             <div className='bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10'>
-                <div className='sm:flex items-center justify-between'>
-                    <div className="sm:flex items-center justify-between">
-                        <div className="flex items-center">
-                            <a onClick={() => setStatus(CruiseStatus.merged)} className="rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" href=" javascript:void(0)">
-                                <div className="py-2 px-8 bg-indigo-100 text-gray-600 hover:text-indigo-700 hover:bg-teal-400 rounded-full">
-                                    <p>Merged</p>
-                                </div>
-                            </a>
-                            <a onClick={() => setStatus(CruiseStatus.underReview)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
-                                <div className="py-2 px-8 bg-indigo-100 text-gray-600 hover:text-indigo-700 hover:bg-yellow-400 rounded-full ">
-                                    <p>Under Review</p>
-                                </div>
-                            </a>
-                            <a onClick={() => setStatus(CruiseStatus.isRejected)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
-                                <div className="py-2 px-8 bg-indigo-100 text-gray-600 hover:text-indigo-700 hover:bg-red-400 rounded-full ">
-                                    <p>Rejected</p>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                <br/>
                 {data ?(
                 <table className="table-auto">                
                     <thead className="text-xs ">
