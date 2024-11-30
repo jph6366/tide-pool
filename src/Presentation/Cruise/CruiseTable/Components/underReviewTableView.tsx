@@ -6,23 +6,25 @@ import { CruiseStatus, underReviewCruiseAtomWithCache } from '@/Data/DataSource/
 import { atom, useAtom } from 'jotai';
 
 interface TableProps {
+    data: Cruise[]
     filter: any
     aggregateTotalArea: any
     setTotalArea: any
     setFilter: any
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    filterInPlace: any
+    filterCruises: any
 }
 
 export default function UnderReviewTableView( {
+    data,
     filter,
     aggregateTotalArea,
     setTotalArea,
     setFilter,
     isOpen, 
     setIsOpen,
-    filterInPlace
+    filterCruises
 } : TableProps ) {
 
     // const {
@@ -51,6 +53,9 @@ export default function UnderReviewTableView( {
     };
 
     useEffect(() => {
+        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
+        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+        setTotalArea(area);
         const container = containerRef.current;
         if (container) {
             container.addEventListener('scroll', handleScroll);
@@ -62,21 +67,10 @@ export default function UnderReviewTableView( {
         };
     }, []);
 
-    const [data] = useAtom(underReviewCruiseAtomWithCache);
-
-    async function filterCruises(search: string) {
-        if(data) {
-            filterInPlace(data, (cruise:any ) => cruise[filter] !== null && cruise[filter].includes(search))
-            const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
-                .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-                setTotalArea(area);
-            }
-        
-    }
 
     const handleFilterChange = (event: React.FormEvent<HTMLFormElement>) => {
         const searchInput = event.currentTarget.elements[0] as HTMLInputElement;
-        filterCruises(searchInput.value.trim())
+        filterCruises(data, searchInput.value.trim())
         event.preventDefault()
     };
 
@@ -102,7 +96,7 @@ export default function UnderReviewTableView( {
                 className="flex items-center space-x-1 cursor-pointer"
                 onClick={toggleMenu}
             >
-                <span className="text-lg">Sort By</span>
+                <span className="text-lg">Sort By {filter}</span>
                 <svg
                 className={`h-4 w-4 transform transition-transform ${
                     isOpen ? 'rotate-180' : ''
@@ -121,7 +115,7 @@ export default function UnderReviewTableView( {
                 </svg>
             </div>
             <div
-                className={`absolute mt-1  min-w-max shadow rounded bg-gray-300 border border-gray-400 transition-opacity duration-10 ease-in-out z-10 ${
+                className={`absolute mt-1  min-w-max shadow rounded bg-gray-300 border border-gray-400 transition-opacity duration-10 ease-in-out z-10 cursor-pointer ${
                 isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
                 }`}
             >
@@ -129,7 +123,10 @@ export default function UnderReviewTableView( {
                     { Reflect.ownKeys(data[0]).map( (prop, i) => {
                         return (
                             <li key={i}>
-                                <a  onClick={() => setFilter(prop.toString())} className="block px-3 py-2 hover:bg-gray-200">
+                                <a  onClick={() => {
+                                    setIsOpen((prev) => !prev)
+                                    setFilter(prop.toString())
+                                    }} className="block px-3 py-2 hover:bg-gray-200">
                                 {prop.toString()}
                                 </a>
                             </li>
@@ -167,11 +164,6 @@ export default function UnderReviewTableView( {
                             <th scope="col"  className='table-auto'>
                                 <p>Total Aggregate Area: {aggregateTotalArea} </p>  
                             </th>
-                        {/* {Reflect.ownKeys(cruises[0]).map( (prop, i) => (  
-                                <th key={i} scope="col" className="table-auto">
-                                    {prop.toString()}
-                                </th>
-                        ))} */}
                         </tr>
                     </thead>
                     <tbody>

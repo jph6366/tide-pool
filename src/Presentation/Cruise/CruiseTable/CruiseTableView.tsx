@@ -1,41 +1,31 @@
 import useViewModel from './Control/CruiseTable';
 import { CruiseSelection } from '@/Domain/Model/Cruise';
 import TableView from './Components/TableView';
-import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
 import { useState } from 'react';
+import { useAtom } from 'jotai';
 
 export default function CruiseTableView() {
 
     const {
+        data,
+        rdata,
+        udata,
         sortCruises,
         cruiseStatus,
         setStatus,
         filterCruises,
         aggregateTotalArea,
-        data,
         setTotalArea,
         setFilter,
         isOpen, 
         setIsOpen,
-        filterInPlace, 
         filter
     } = useViewModel();
 
     const [open, setOpen] = useState(false);
-
-
-
-    const handleAscSortClick = () => {
-        sortCruises(CruiseSelection.ascendingOrder)
-    };
-
-    const handleDescSortClick = () => {
-        sortCruises(CruiseSelection.descendingOrder)
-    };
-
-
 
     return (
         <div className='min-h-screen bg-gray-50 py-6 flex flex-col items-center justify-center relative overflow-hidden sm:py-12'>
@@ -74,39 +64,27 @@ export default function CruiseTableView() {
                             </div>
                         </div>
                     </div>
-                    <div className='sm:flex items-center justify-between'>
-                        <div className="sm:flex items-center justify-between">
-                            <div className="flex items-center">
-                                <a onClick={handleAscSortClick} className="rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" href=" javascript:void(0)">
-                                    <div className="py-2 px-8 bg-teal-400 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full">
-                                        <p>Newest</p>
-                                    </div>
-                                </a>
-                                <a onClick={handleDescSortClick} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
-                                    <div className="py-2 px-8 bg-yellow-400 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full ">
-                                        <p>Oldest</p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+
                     {cruiseStatus == CruiseStatus.merged  ?(
                         <TableView 
-                        filterCruises={filterCruises}  setFilter={setFilter}
+                        sortCruises={sortCruises}
+                        filter={filter} filterCruises={filterCruises}  setFilter={setFilter}
                         aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
                         data={data}  
                         isOpen={isOpen} setIsOpen={setIsOpen} />
                     ): cruiseStatus == CruiseStatus.underReview ?(
                         <UnderReviewTableView 
+                        data={udata}
                         filter={filter} setFilter={setFilter}
                         aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
-                        filterInPlace={filterInPlace}  
+                        filterCruises={filterCruises}  
                         isOpen={isOpen} setIsOpen={setIsOpen} />
                     ): (
                         <RejectedTableView 
+                        data={rdata}
                         filter={filter} setFilter={setFilter}
                         aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
-                        filterInPlace={filterInPlace}  
+                        filterCruises={filterCruises}  
                         isOpen={isOpen} setIsOpen={setIsOpen}/>
                     )}
                     

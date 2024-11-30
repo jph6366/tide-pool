@@ -13,31 +13,37 @@ export default function ViewModel() {
     const [isOpen, setIsOpen] = useState(false);
     const [filter, setFilter] = useState('platform_id');
     const [data] = useAtom(CruiseAtomWithCache);
-    
+    const [rdata] = useAtom(rejectedCruiseAtomWithCache);
+    const [udata] = useAtom(underReviewCruiseAtomWithCache);
+
     const [aggregateTotalArea, setTotalArea] = useState(0);
 
-    function sortCruises(sort: string) {
-        if (sort === 'ascending') {
-            data.sort((a:Cruise, b:Cruise) => {
+    function sortCruises(cruises: Cruise[], sort: string) {
+        if (sort === 'descending') {
+            cruises.sort((a:Cruise, b:Cruise) => {
                 const dateA = moment(a.created, 'YYYY-MM-DD')
                 const dateB = moment(b.created, 'YYYY-MM-DD')
                 return moment.utc(dateA).diff(dateB);
             })
-        } else if (sort === 'descending') {
-            data.sort((a:Cruise, b:Cruise) => {
+        } else if (sort === 'ascending') {
+            cruises.sort((a:Cruise, b:Cruise) => {
                 const dateA = moment(a.created, 'YYYY-MM-DD')
                 const dateB = moment(b.created, 'YYYY-MM-DD')
                 return moment.utc(dateB).diff(dateA);
             })
         }
+        const area = cruises.filter(a => a.total_area !== null && !isNaN(a.total_area))
+        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+        setTotalArea(area);
     }
 
-    async function filterCruises(search: string) {
-        if(data) {
-                filterInPlace(data, (cruise: any) => cruise[filter].includes(search))
-                const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
-                .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-                setTotalArea(area);
+    async function filterCruises(cruises: Cruise[], search: string) {
+        if(cruises) {
+
+            filterInPlace(cruises, (cruise: any) => cruise[filter] !== null && cruise[filter].includes(search))
+            const area = cruises.filter((a:any) => a.total_area !== null && !isNaN(a.total_area) && a[filter].includes(search))
+            .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+            setTotalArea(area);
             }
         
     }
@@ -62,12 +68,14 @@ export default function ViewModel() {
       
 
     return {
+        data,
+        rdata,
+        udata,
         filterCruises,
         filterInPlace,
         sortCruises,
         aggregateTotalArea,
         getCountryCode,
-        data,
         setTotalArea,
         cruiseStatus, 
         setStatus,

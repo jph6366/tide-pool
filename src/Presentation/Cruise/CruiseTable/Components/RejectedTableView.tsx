@@ -6,24 +6,26 @@ import { CruiseStatus, rejectedCruiseAtomWithCache } from '@/Data/DataSource/API
 import { atom, useAtom } from 'jotai';
 
 interface TableProps {
+    data: Cruise[]
     filter: any
     aggregateTotalArea: any
     setTotalArea: any
     setFilter: any
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
-    filterInPlace: any
+    filterCruises: any
 }
 
 
 export default function RejectedTableView( {
+    data,
     filter,
     aggregateTotalArea,
     setTotalArea,
     setFilter,
     isOpen, 
     setIsOpen,
-    filterInPlace
+    filterCruises
 } : TableProps ) {
 
     // const {
@@ -36,7 +38,7 @@ export default function RejectedTableView( {
     //     isOpen, 
     //     setIsOpen
     // } = useViewModel();
-
+    const [caseSensitive, setCase] = useState(false);
     const [itemsToShow, setItemsToShow] = useState(13); // Default number of items
     const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
 
@@ -53,6 +55,9 @@ export default function RejectedTableView( {
     };
 
     useEffect(() => {
+        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
+        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+        setTotalArea(area);
         const container = containerRef.current;
         if (container) {
             container.addEventListener('scroll', handleScroll);
@@ -64,26 +69,21 @@ export default function RejectedTableView( {
         };
     }, []);
 
-    const [data] = useAtom(rejectedCruiseAtomWithCache);
-
-    async function filterCruises(search: string) {
-        if(data) {
-                filterInPlace(data, (cruise:any ) => cruise[filter] !== null && cruise[filter].includes(search))
-                const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes(search))
-                .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-                setTotalArea(area);
-            }
-        
-    }
-
     const handleFilterChange = (event: React.FormEvent<HTMLFormElement>) => {
         const searchInput = event.currentTarget.elements[0] as HTMLInputElement;
-        filterCruises(searchInput.value.trim())
+        filterCruises(data, searchInput.value.trim())
+        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area) && a.platform_id.includes( searchInput.value.trim()))
+        .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+        setTotalArea(area);
         event.preventDefault()
     };
 
     const toggleMenu = () => {
         setIsOpen((prev) => !prev);
+    };
+
+    const toggleCase = () => {
+        setCase((prev) => !prev);
     };
 
 
@@ -100,11 +100,26 @@ export default function RejectedTableView( {
                     <input  type="text" id="message" className="block overflow-visible p-4 pl-10 text-sm  border rounded-lg" placeholder="Filter" required/>
                 </div>
             </form>
+            <div onClick={toggleCase} className="bg-gray-200 rounded-sm w-5 h-5 mb-5 flex flex-shrink-0 justify-center items-center relative">
+                <input placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
+                <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
+                    <svg className="icon icon-tabler icon-tabler-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z"></path>
+                        <path d="M5 12l5 5l10 -10"></path>
+                    </svg>
+                </div>
+            </div> 
+            {  caseSensitive == true ?(
+            <p>{'Case Sensitive'}</p>
+            ) : (
+                <p>{'Case Sensitive'.toLowerCase()}</p>
+            )
+            }
             <div
                 className="flex items-center space-x-1 cursor-pointer"
                 onClick={toggleMenu}
             >
-                <span className="text-lg">Sort By</span>
+                <span className="text-lg">Sort By {filter}</span>
                 <svg
                 className={`h-4 w-4 transform transition-transform ${
                     isOpen ? 'rotate-180' : ''
@@ -123,7 +138,7 @@ export default function RejectedTableView( {
                 </svg>
             </div>
             <div
-                className={`absolute mt-1  min-w-max shadow rounded bg-gray-300 border border-gray-400 transition-opacity duration-10 ease-in-out z-10 ${
+                className={`absolute mt-1  min-w-max shadow rounded bg-gray-300 border border-gray-400 transition-opacity duration-10 ease-in-out z-10 cursor-pointer ${
                 isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
                 }`}
             >
@@ -131,7 +146,11 @@ export default function RejectedTableView( {
                     { Reflect.ownKeys(data[0]).map( (prop, i) => {
                         return (
                             <li key={i}>
-                                <a  onClick={() => setFilter(prop.toString())} className="block px-3 py-2 hover:bg-gray-200">
+                                <a  onClick={() => {
+                                    setIsOpen((prev) => !prev)
+                                    setFilter(prop.toString())
+                                    }} 
+                                    className="block px-3 py-2 hover:bg-gray-200">
                                 {prop.toString()}
                                 </a>
                             </li>
