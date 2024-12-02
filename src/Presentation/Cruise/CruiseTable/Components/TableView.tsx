@@ -162,7 +162,7 @@ export default function TableView( {
                         </thead>
                         <tbody>
                             {data.map((cruise: Cruise, i:number) => {
-                                if(i < 13) {
+                                if(i < 113) {
                                     return (
                                         <CruiseView key={i} cruise={cruise} />
                                     );

@@ -14,6 +14,8 @@ interface TableProps {
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
     filterCruises: any
+    caseSensitive:boolean
+    setCase: any
 }
 
 
@@ -25,7 +27,9 @@ export default function RejectedTableView( {
     setFilter,
     isOpen, 
     setIsOpen,
-    filterCruises
+    filterCruises,
+    caseSensitive,
+    setCase
 } : TableProps ) {
 
     // const {
@@ -38,7 +42,6 @@ export default function RejectedTableView( {
     //     isOpen, 
     //     setIsOpen
     // } = useViewModel();
-    const [caseSensitive, setCase] = useState(false);
     const [itemsToShow, setItemsToShow] = useState(13); // Default number of items
     const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
 
@@ -83,7 +86,7 @@ export default function RejectedTableView( {
     };
 
     const toggleCase = () => {
-        setCase((prev) => !prev);
+        setCase((prev:any) => !prev);
     };
 
 
@@ -100,21 +103,6 @@ export default function RejectedTableView( {
                     <input  type="text" id="message" className="block overflow-visible p-4 pl-10 text-sm  border rounded-lg" placeholder="Filter" required/>
                 </div>
             </form>
-            <div onClick={toggleCase} className="bg-gray-200 rounded-sm w-5 h-5 mb-5 flex flex-shrink-0 justify-center items-center relative">
-                <input placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
-                <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
-                    <svg className="icon icon-tabler icon-tabler-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
-                        <path stroke="none" d="M0 0h24v24H0z"></path>
-                        <path d="M5 12l5 5l10 -10"></path>
-                    </svg>
-                </div>
-            </div> 
-            {  caseSensitive == true ?(
-            <p>{'Case Sensitive'}</p>
-            ) : (
-                <p>{'Case Sensitive'.toLowerCase()}</p>
-            )
-            }
             <div
                 className="flex items-center space-x-1 cursor-pointer"
                 onClick={toggleMenu}

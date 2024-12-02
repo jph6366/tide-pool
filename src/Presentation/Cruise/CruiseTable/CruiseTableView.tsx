@@ -22,7 +22,9 @@ export default function CruiseTableView() {
         setFilter,
         isOpen, 
         setIsOpen,
-        filter
+        filter,
+        caseSensitive,
+        setCase
     } = useViewModel();
 
     const [open, setOpen] = useState(false);
@@ -81,11 +83,14 @@ export default function CruiseTableView() {
                         isOpen={isOpen} setIsOpen={setIsOpen} />
                     ): (
                         <RejectedTableView 
-                        data={rdata}
-                        filter={filter} setFilter={setFilter}
-                        aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
-                        filterCruises={filterCruises}  
-                        isOpen={isOpen} setIsOpen={setIsOpen}/>
+                                    data={rdata}
+                                    filter={filter} setFilter={setFilter}
+                                    aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
+                                    filterCruises={filterCruises}
+                                    isOpen={isOpen} setIsOpen={setIsOpen} 
+                                    caseSensitive={caseSensitive} setCase={setCase}                        
+                                    />
+                        
                     )}
                     
                 </div>

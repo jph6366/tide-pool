@@ -8,7 +8,7 @@ import * as en from  'i18n-iso-countries/langs/en.json';
 
 
 export default function ViewModel() {
-
+    const [caseSensitive, setCase] = useState(true);
     const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom);
     const [isOpen, setIsOpen] = useState(false);
     const [filter, setFilter] = useState('platform_id');
@@ -39,11 +39,17 @@ export default function ViewModel() {
 
     async function filterCruises(cruises: Cruise[], search: string) {
         if(cruises) {
-
-            filterInPlace(cruises, (cruise: any) => cruise[filter] !== null && cruise[filter].includes(search))
-            const area = cruises.filter((a:any) => a.total_area !== null && !isNaN(a.total_area) && a[filter].includes(search))
-            .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
-            setTotalArea(area);
+                if (caseSensitive){
+                    filterInPlace(cruises, (cruise: any) => cruise[filter] !== null && cruise[filter].includes(search))
+                    const area = cruises.filter((a:any) => a.total_area !== null && !isNaN(a.total_area) && a[filter].includes(search))
+                    .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+                    setTotalArea(area);
+                } else {
+                    filterInPlace(cruises, (cruise: any) => cruise[filter] !== null && cruise[filter].includes(search.toLowerCase()))
+                    const area = cruises.filter((a:any) => a.total_area !== null && !isNaN(a.total_area) && a[filter].includes(search.toLowerCase()))
+                    .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
+                    setTotalArea(area);
+                }
             }
         
     }
@@ -71,18 +77,14 @@ export default function ViewModel() {
         data,
         rdata,
         udata,
-        filterCruises,
-        filterInPlace,
+        filterCruises, filterInPlace,
         sortCruises,
-        aggregateTotalArea,
         getCountryCode,
-        setTotalArea,
-        cruiseStatus, 
-        setStatus,
-        isOpen,
-        setIsOpen,
-        filter,
-        setFilter
+        aggregateTotalArea, setTotalArea,
+        cruiseStatus, setStatus,
+        isOpen, setIsOpen,
+        filter, setFilter,
+        caseSensitive, setCase
     };
     
 
