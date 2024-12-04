@@ -25,7 +25,7 @@ export interface Cruise {
     is_rejected: string
     created: string
     device_make: string
-    device_model: number
+    device_model: string
     total_area: number
     track_length: number
     file_count: number
