@@ -17,16 +17,6 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 
   ![image](https://github.com/jph6366/tide-pool/blob/main/tide-pool-class-diagram.drawio.png)
   
-## To Do List
-
-- react-map-gl
-    - Redux, Cleaner Code,
-    - Calculate corners from total area and center_x, _y and Draw Polygons
-    - parse MapStyles
-- CruiseList
-    - Fix Bugs, Refine User Experience
-
-
 ## Developing
 
 The project requires Node 18 to be installed on your local machine, refer to npm for [download instructions](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
@@ -44,3 +34,5 @@ npm run dev
 ```
 
 The dev server will launch in your browser at [localhost:4444](localhost:4444) and will automatically reload as you make changes.
+
+[React Style Guide] (https://mkosir.github.io/typescript-style-guide/#appendix---react)
