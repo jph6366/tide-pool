@@ -15,10 +15,8 @@ export default defineConfig({
         '.storybook/**/*',
         '__tests__/**/*',
         'src/@types/**/*',
-        'src/Domain/**/*',
-        'src/Data/**/*',
-        'src/Presentation/**/*',
-        'src/App.tsx',
+        'src/stories/**/*',
+        'src/**/*.stories.tsx'
       ],
     },
     exclude: [ 'node_modules'],

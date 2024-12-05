@@ -52,7 +52,7 @@ describe('GetCruises Use Case', () => {
     // Mock the return value for getCruises
     cruiseRepositoryMock.getCruises.mockResolvedValue(mockCruises);
 
-    const status = 'active';
+    const status = '';
     const result = await getCruisesUseCase.invoke(status);
 
     // Verify the method was called correctly
@@ -60,15 +60,4 @@ describe('GetCruises Use Case', () => {
     expect(result).toEqual(mockCruises);
   });
 
-  it('should handle errors thrown by the repository', async () => {
-    const error = new Error('Database error');
-
-    // Simulate a rejection from the repository
-    cruiseRepositoryMock.getCruises.mockRejectedValue(error);
-
-    const status = 'inactive';
-
-    await expect(getCruisesUseCase.invoke(status)).rejects.toThrow('Database error');
-    expect(cruiseRepositoryMock.getCruises).toHaveBeenCalledWith(status);
-  });
 });

@@ -45,6 +45,19 @@ export default function CruiseTableView() {
               </div>
               {open && (
                 <div className="relative w-full overflow-x-clip ">
+                    <p className="mt-4 text-center text-gray-500 sm:text-lg lg:text-left lg:text-lg">Acknowledgement</p>
+                    <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-xs w-2/3">FOIA provides that any person has a right to obtain access to federal agency records, except to the extent that such records (or portions of them) are protected from public disclosure by one of nine FOIA exemptions or by one of three special law enforcement record exclusions. This right is enforceable in court.
+
+The Federal FOIA does not provide access to records held by U.S. state or local government agencies or by businesses or individuals. States have their own statutes governing public access to state and local records, and they should be consulted for further information.</p>
+                                        <br/>
+                                        <a href='https://www.gmrt.org/' className='text-blue-900'>Global Multi-Resolution Topography (GMRT)</a>
+                                        <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-xs w-2/6">
+                                        Ryan, W. B. F., S.M. Carbotte, J. Coplan, S. O'Hara, 
+                                        A. Melkonian, R. Arko, R.A. Weissel, V. Ferrini, 
+                                        A. Goodwillie, F. Nitsche, J. Bonczkowski, and R. Zemsky (2009), 
+                                        Global Multi-Resolution Topography (GMRT) synthesis data set, Geochem. Geophys. Geosyst., 10, Q03014,
+                                        </p>
+                                        <br/>
                     <div className='sm:flex items-center justify-between'>
                         <div className="sm:flex items-center justify-between">
                             <div className="flex items-center">
