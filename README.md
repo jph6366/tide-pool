@@ -35,4 +35,4 @@ npm run dev
 
 The dev server will launch in your browser at [localhost:4444](localhost:4444) and will automatically reload as you make changes.
 
-[React Style Guide] (https://mkosir.github.io/typescript-style-guide/#appendix---react)
+[React Style Guide](https://mkosir.github.io/typescript-style-guide/#appendix---react)
