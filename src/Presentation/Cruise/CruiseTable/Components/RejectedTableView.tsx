@@ -131,7 +131,7 @@ export default function RejectedTableView( {
                 }`}
             >
                 <ul className="block text-right text-gray-900">
-                    { Reflect.ownKeys(data[0]).map( (prop, i) => {
+                    {data.length != 0  && Reflect.ownKeys(data[0]).map( (prop, i) => {
                         return (
                             <li key={i}>
                                 <a  onClick={() => {
@@ -149,7 +149,7 @@ export default function RejectedTableView( {
             </div>
                  <br/>  
             <div className='bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10'>
-                {data ?(
+                {data.length != 0  ?(
                 <table className="table-auto">                
                     <thead className="text-xs ">
                         <tr className=''>
@@ -184,7 +184,7 @@ export default function RejectedTableView( {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.map((cruise: Cruise, i:number) => {
+                        {data.length != 0 && data.map((cruise: Cruise, i:number) => {
                             return (
                                 <CruiseView key={i} cruise={cruise} />
                             );
