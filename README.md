@@ -39,5 +39,5 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 
 ## Diagrams
 
-    ![image](https://github.com/jph6366/tide-pool/blob/bathy-req/flowofcontrol.drawio.png)
+  ![image](https://github.com/jph6366/tide-pool/blob/bathy-req/flowofcontrol.drawio.png)
 
