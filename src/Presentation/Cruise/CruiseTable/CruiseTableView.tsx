@@ -1,11 +1,16 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable camelcase */
 import useViewModel from './Control/CruiseTable';
-import { CruiseSelection } from '@/Domain/Model/Cruise';
+import { Cruise, CruiseSelection } from '@/Domain/Model/Cruise';
 import TableView from './Components/TableView';
 import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
+import Map, { Layer, Marker, Popup, Source } from 'react-map-gl';
 import { useAtom } from 'jotai';
+import JotaiControls from '@/Presentation/WebR/JotaiControls';
+import mapStateAtom from '@/Presentation/JotaiStore/Store';
 
 export default function CruiseTableView() {
 
@@ -28,6 +33,14 @@ export default function CruiseTableView() {
     } = useViewModel();
 
     const [open, setOpen] = useState(false);
+    const [state, dispatch] = useAtom(mapStateAtom);
+    const { mapStyle, viewState } = state;
+    const onMove = useCallback((evt:any) => {
+        dispatch({type: 'setViewState', payload: evt.viewState});
+      }, []);
+    
+    // Convert to GeoJSON FeatureCollection
+
 
     return (
         <div className='min-h-screen bg-gray-50 py-6 flex flex-col items-center justify-center relative overflow-hidden sm:py-12'>
@@ -58,6 +71,50 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                         Global Multi-Resolution Topography (GMRT) synthesis data set, Geochem. Geophys. Geosyst., 10, Q03014,
                                         </p>
                                         <br/>
+                    <JotaiControls/>
+                    <Map
+                        {...viewState}
+                        onMove={onMove}
+                        style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
+                        mapStyle={mapStyle}
+                        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                        >
+
+                            <Source
+                                id="cruises"
+                                type="geojson"
+                                data={{
+                                    type: 'FeatureCollection',
+                                    features: data.map((entry: Cruise) => ({
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [entry.center_x, entry.center_y],
+                                        },
+                                        properties: {
+                                            entry_id: entry.entry_id,
+                                            survey_id: entry.survey_id,
+                                            url: entry.url,
+                                            year: entry.year,
+                                            chief: entry.chief,
+                                            total_area: entry.total_area,
+                                            track_length: entry.track_length,
+                                        },
+                                        })),
+                                }}
+                            >
+                                  <Layer
+                                        id="cruise-points"
+                                        type="circle"
+                                        paint={{
+                                        'circle-radius': 6,
+                                        'circle-color': '#007cbf',
+                                        }}
+                                    />
+
+                            </Source>
+
+                        </Map>
                     <div className='sm:flex items-center justify-between'>
                         <div className="sm:flex items-center justify-between">
                             <div className="flex items-center">
