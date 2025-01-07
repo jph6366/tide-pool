@@ -71,13 +71,15 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                         Global Multi-Resolution Topography (GMRT) synthesis data set, Geochem. Geophys. Geosyst., 10, Q03014,
                                         </p>
                                         <br/>
-                    <JotaiControls/>
-                    <Map
-                        {...viewState}
-                        onMove={onMove}
-                        style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
-                        mapStyle={mapStyle}
-                        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+
+                                        {/* <JotaiControls/> */}
+                    {cruiseStatus == CruiseStatus.merged  ?(
+                        <Map
+                            {...viewState}
+                            onMove={onMove}
+                            style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
+                            mapStyle={mapStyle}
+                            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                         >
 
                             <Source
@@ -115,6 +117,96 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             </Source>
 
                         </Map>
+                    ): cruiseStatus == CruiseStatus.underReview ?(
+                        <Map
+                            {...viewState}
+                            onMove={onMove}
+                            style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
+                            mapStyle={mapStyle}
+                            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                        >
+
+                            <Source
+                                id="cruises"
+                                type="geojson"
+                                data={{
+                                    type: 'FeatureCollection',
+                                    features: rdata.map((entry: Cruise) => ({
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [entry.center_x, entry.center_y],
+                                        },
+                                        properties: {
+                                            entry_id: entry.entry_id,
+                                            survey_id: entry.survey_id,
+                                            url: entry.url,
+                                            year: entry.year,
+                                            chief: entry.chief,
+                                            total_area: entry.total_area,
+                                            track_length: entry.track_length,
+                                        },
+                                        })),
+                                }}
+                            >
+                                  <Layer
+                                        id="cruise-points"
+                                        type="circle"
+                                        paint={{
+                                        'circle-radius': 6,
+                                        'circle-color': 'orange',
+                                        }}
+                                    />
+
+                            </Source>
+
+                        </Map>
+                    ): (
+                        <Map
+                            {...viewState}
+                            onMove={onMove}
+                            style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
+                            mapStyle={mapStyle}
+                            mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+                        >
+
+                            <Source
+                                id="cruises"
+                                type="geojson"
+                                data={{
+                                    type: 'FeatureCollection',
+                                    features: data.map((entry: Cruise) => ({
+                                        type: 'Feature',
+                                        geometry: {
+                                            type: 'Point',
+                                            coordinates: [entry.center_x, entry.center_y],
+                                        },
+                                        properties: {
+                                            entry_id: entry.entry_id,
+                                            survey_id: entry.survey_id,
+                                            url: entry.url,
+                                            year: entry.year,
+                                            chief: entry.chief,
+                                            total_area: entry.total_area,
+                                            track_length: entry.track_length,
+                                        },
+                                        })),
+                                }}
+                            >
+                                  <Layer
+                                        id="cruise-points"
+                                        type="circle"
+                                        paint={{
+                                        'circle-radius': 6,
+                                        'circle-color': 'red',
+                                        }}
+                                    />
+
+                            </Source>
+
+                        </Map>
+                    )}
+
                     <div className='sm:flex items-center justify-between'>
                         <div className="sm:flex items-center justify-between">
                             <div className="flex items-center">
