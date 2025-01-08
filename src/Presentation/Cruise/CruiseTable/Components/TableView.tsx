@@ -11,6 +11,7 @@ interface TableProps {
     data: Cruise[]
     setTotalArea: any
     setFilter: any
+    selectCruise: any
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -23,6 +24,7 @@ export default function TableView( {
     data,
     setTotalArea,
     setFilter,
+    selectCruise,
     isOpen, 
     setIsOpen
 } : TableProps ) {
@@ -164,7 +166,7 @@ export default function TableView( {
                             {data.map((cruise: Cruise, i:number) => {
                                 if(i < 113) {
                                     return (
-                                        <CruiseView key={i} cruise={cruise} />
+                                        <CruiseView key={i} cruise={cruise} selectCruise={selectCruise} />
                                     );
                                 }
                                 

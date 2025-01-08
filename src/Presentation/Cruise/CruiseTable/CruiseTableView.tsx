@@ -38,9 +38,13 @@ export default function CruiseTableView() {
     const onMove = useCallback((evt:any) => {
         dispatch({type: 'setViewState', payload: evt.viewState});
       }, []);
+      const [selectedCruise, setSelectedCruise] = useState<{
+        longitude: number;
+        latitude: number;
+        entryIdentifier: string;
+      } | null>(null);
     
-    // Convert to GeoJSON FeatureCollection
-
+    const entryFilter = ['==', 'entry_id', selectedCruise?.entryIdentifier || ''];
 
     return (
         <div className='min-h-screen bg-gray-50 py-6 flex flex-col items-center justify-center relative overflow-hidden sm:py-12'>
@@ -113,6 +117,16 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                         'circle-color': '#007cbf',
                                         }}
                                     />
+                                  <Layer
+                                        id="cruise-selection"
+                                        type="circle"
+                                        paint={{
+                                        'circle-radius': 6,
+                                        'circle-color': 'green',
+                                        }}
+                                        filter={entryFilter}
+                                    />
+
 
                             </Source>
 
@@ -231,11 +245,11 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
 
                     {cruiseStatus == CruiseStatus.merged  ?(
                         <TableView 
-                        sortCruises={sortCruises}
-                        filter={filter} filterCruises={filterCruises}  setFilter={setFilter}
-                        aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
-                        data={data}  
-                        isOpen={isOpen} setIsOpen={setIsOpen} />
+                            sortCruises={sortCruises}
+                            filter={filter} filterCruises={filterCruises} setFilter={setFilter}
+                            aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
+                            data={data}
+                            isOpen={isOpen} setIsOpen={setIsOpen} selectCruise={setSelectedCruise} />
                     ): cruiseStatus == CruiseStatus.underReview ?(
                         <UnderReviewTableView 
                         data={udata}

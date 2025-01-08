@@ -6,10 +6,11 @@ import { useAtom } from 'jotai';
 
 interface CruiseViewProps {
     cruise: Cruise;
+    selectCruise: any;
 }
 
 
-export default function CruiseView({cruise: cruise}:CruiseViewProps) {
+export default function CruiseView({cruise: cruise, selectCruise: select}:CruiseViewProps) {
 
 
                 const {
@@ -23,6 +24,11 @@ export default function CruiseView({cruise: cruise}:CruiseViewProps) {
                             type: 'setViewState',
                             payload: {...viewState, longitude: cruise.center_x, latitude: cruise.center_y}                            
                         })
+                        select({
+                            longitude: cruise.center_x,
+                            latitude: cruise.center_y,
+                            entryIdentifier: cruise.entry_id
+                        });
                     }
                 };
 
