@@ -61,6 +61,12 @@ export default function TableView( {
         setIsOpen((prev) => !prev);
     };
 
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            selectAll(event.target.checked);
+    };
+
+    const [checkAll, selectAll] = useState(false);
+
 
     return (
         <div>
@@ -143,7 +149,7 @@ export default function TableView( {
                             <tr className=''>
                                 <th scope="col"  className='table-auto'>
                                     <div className="bg-gray-200 rounded-sm w-5 h-5 mb-5 flex flex-shrink-0 justify-center items-center relative">
-                                        <input placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
+                                        <input onChange={handleCheckboxChange} placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
                                         <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
                                             <svg className="icon icon-tabler icon-tabler-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                 <path stroke="none" d="M0 0h24v24H0z"></path>
@@ -185,7 +191,9 @@ export default function TableView( {
                             {data.map((cruise: Cruise, i:number) => {
                                 if(i < 113) {
                                     return (
-                                        <CruiseView key={i} cruise={cruise} selectedCruises={selectedCruises} setSelected={setSelectedCruise} selectCruise={selectCruise} />
+                                        <CruiseView key={i} cruise={cruise}
+                                        selectedCruises={selectedCruises} setSelected={setSelectedCruise} 
+                                        selectCruise={selectCruise} selectAll={checkAll} />
                                     );
                                 }
                                 

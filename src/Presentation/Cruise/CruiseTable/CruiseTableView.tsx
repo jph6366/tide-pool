@@ -50,11 +50,6 @@ export default function CruiseTableView() {
             entryIdentifier: string;
         };
     }>({
-        '': {
-            longitude: '',
-            latitude: '',
-            entryIdentifier: '',
-        },
     });
     
 
