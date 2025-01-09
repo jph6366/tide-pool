@@ -1,16 +1,18 @@
 import { Cruise } from '@/Domain/Model/Cruise';
 import useViewModel from '../Control/CruiseTable';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
 import { useAtom } from 'jotai';
 
 interface CruiseViewProps {
     cruise: Cruise;
+    selectedCruises: any;
+    setSelected: any;
     selectCruise: any;
 }
 
 
-export default function CruiseView({cruise: cruise, selectCruise: select}:CruiseViewProps) {
+export default function CruiseView({cruise: cruise, selectedCruises: cruises, setSelected: selected, selectCruise: select}:CruiseViewProps) {
 
 
                 const {
@@ -20,18 +22,33 @@ export default function CruiseView({cruise: cruise, selectCruise: select}:Cruise
                 const viewState = state.viewState;
                 const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
                     if (event.target.checked) {
+                        
+                        const newSelection = {
+                            longitude: cruise.center_x,
+                            latitude: cruise.center_y,
+                            entryIdentifier: cruise.entry_id,
+                        };
+                
+                        const updatedCruises = { ...cruises, [cruise.entry_id]: newSelection };
+                
                         dispatch({
                             type: 'setViewState',
                             payload: {...viewState, longitude: cruise.center_x, latitude: cruise.center_y}                            
                         })
-                        select({
-                            longitude: cruise.center_x,
-                            latitude: cruise.center_y,
-                            entryIdentifier: cruise.entry_id
-                        });
+
+                        select(updatedCruises);
+                        selected(newSelection)
+                    } else {
+                        const { [cruise.entry_id]: _, ...remainingCruises } = cruises;
+                        select(remainingCruises)
                     }
                 };
 
+
+                // let isChecked = false;
+                // useEffect(() => {
+                //     isChecked = Object.prototype.hasOwnProperty.call(cruises, cruise.entry_id);
+                // }, [cruises, cruise])
 
 
 
@@ -40,7 +57,7 @@ export default function CruiseView({cruise: cruise, selectCruise: select}:Cruise
                                 <td>
                                     <div className="ml-5">
                                         <div className="bg-gray-200 rounded-sm w-5 h-5 flex flex-shrink-0 justify-center items-center relative">
-                                            <input onChange={handleCheckboxChange} placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
+                                            <input  onChange={handleCheckboxChange} placeholder="checkbox" type="checkbox" className="focus:opacity-100 checkbox opacity-0 absolute cursor-pointer w-full h-full" />
                                             <div className="check-icon hidden bg-indigo-700 text-white rounded-sm">
                                                 <svg className="icon icon-tabler icon-tabler-check" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
                                                     <path stroke="none" d="M0 0h24v24H0z"></path>

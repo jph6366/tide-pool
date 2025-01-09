@@ -38,13 +38,28 @@ export default function CruiseTableView() {
     const onMove = useCallback((evt:any) => {
         dispatch({type: 'setViewState', payload: evt.viewState});
       }, []);
-      const [selectedCruise, setSelectedCruise] = useState<{
+    const [selectedCruise, setSelectedCruise] = useState<{
         longitude: number;
         latitude: number;
         entryIdentifier: string;
       } | null>(null);
+    const [selectedCruises, setSelectedCruises] = useState<{
+        [key: string]: {
+            longitude: string;
+            latitude: string;
+            entryIdentifier: string;
+        };
+    }>({
+        '': {
+            longitude: '',
+            latitude: '',
+            entryIdentifier: '',
+        },
+    });
     
+
     const entryFilter = ['==', 'entry_id', selectedCruise?.entryIdentifier || ''];
+
 
     return (
         <div className='min-h-screen bg-gray-50 py-6 flex flex-col items-center justify-center relative overflow-hidden sm:py-12'>
@@ -249,7 +264,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             filter={filter} filterCruises={filterCruises} setFilter={setFilter}
                             aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}
                             data={data}
-                            isOpen={isOpen} setIsOpen={setIsOpen} selectCruise={setSelectedCruise} />
+                            isOpen={isOpen} setIsOpen={setIsOpen} selectedCruises={selectedCruises} selectCruise={setSelectedCruises} setSelectedCruise={setSelectedCruise} />
                     ): cruiseStatus == CruiseStatus.underReview ?(
                         <UnderReviewTableView 
                         data={udata}

@@ -11,6 +11,8 @@ interface TableProps {
     data: Cruise[]
     setTotalArea: any
     setFilter: any
+    selectedCruises: any
+    setSelectedCruise: any
     selectCruise: any
     isOpen: boolean
     setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
@@ -24,6 +26,8 @@ export default function TableView( {
     data,
     setTotalArea,
     setFilter,
+    selectedCruises,
+    setSelectedCruise,
     selectCruise,
     isOpen, 
     setIsOpen
@@ -133,7 +137,7 @@ export default function TableView( {
                 </div>
                     <br/>
                 <div className='bg-white py-4 md:py-7 px-4 md:px-8 xl:px-10'>
-                    {data ?(
+                    {data  ?(
                     <table className="table-auto">                
                         <thead className="text-xs ">
                             <tr className=''>
@@ -163,10 +167,25 @@ export default function TableView( {
                             </tr>
                         </thead>
                         <tbody>
+                        {selectedCruises && Object.keys(selectedCruises).length > 0 ? (
+                            <div>
+                                Selected: 
+                                {Object.values(selectedCruises).map((entry: any, i: number) => (
+                                    <p key={i}>
+                                        Entry ID: {entry.entryIdentifier}
+                                    </p>
+                                ))}
+                            </div>
+                        ) : (
+                            <div>
+                                <p>Awaiting Selection</p>
+                            </div>
+                        )}
+
                             {data.map((cruise: Cruise, i:number) => {
                                 if(i < 113) {
                                     return (
-                                        <CruiseView key={i} cruise={cruise} selectCruise={selectCruise} />
+                                        <CruiseView key={i} cruise={cruise} selectedCruises={selectedCruises} setSelected={setSelectedCruise} selectCruise={selectCruise} />
                                     );
                                 }
                                 
