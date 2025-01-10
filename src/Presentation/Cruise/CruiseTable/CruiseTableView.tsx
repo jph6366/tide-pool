@@ -6,11 +6,22 @@ import TableView from './Components/TableView';
 import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
-import { useCallback, useState } from 'react';
-import Map, { Layer, Marker, Popup, Source } from 'react-map-gl';
+import { useCallback, useRef, useState } from 'react';
+import Map, { ControlPosition, Layer, Marker, Popup, Source, useControl } from 'react-map-gl';
+import MapboxDraw  from '@mapbox/mapbox-gl-draw'
 import { useAtom } from 'jotai';
 import JotaiControls from '@/Presentation/WebR/JotaiControls';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
+
+
+type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
+    position?: ControlPosition;
+  
+    onCreate?: (evt: {features: object[]}) => void;
+    onUpdate?: (evt: {features: object[]; action: string}) => void;
+    onDelete?: (evt: {features: object[]}) => void;
+  };
+  
 
 export default function CruiseTableView() {
 
@@ -51,7 +62,48 @@ export default function CruiseTableView() {
         };
     }>({
     });
-    
+
+    const [features, setFeatures] = useState({});
+
+    const onUpdate = useCallback((event:any) => {
+      setFeatures(currFeatures => {
+        const newFeatures = {...currFeatures};
+        for (const f of event.features) {
+          newFeatures[f.id] = f;
+        }
+        return newFeatures;
+      });
+    }, []);
+  
+    const onDelete = useCallback((event:any) => {
+      setFeatures(currFeatures => {
+        const newFeatures = {...currFeatures};
+        for (const f of event.features) {
+          delete newFeatures[f.id];
+        }
+        return newFeatures;
+      });
+    }, []);
+
+    function DrawControl(props: DrawControlProps) {
+        useControl<MapboxDraw>(
+          () => new MapboxDraw(props),
+          ({map}: {map: MapRef}) => {
+            map.on('draw.create', props.onCreate);
+            map.on('draw.update', props.onUpdate);
+            map.on('draw.delete', props.onDelete);
+          },
+          ({map}: {map: MapRef}) => {
+            map.off('draw.create', props.onCreate);
+            map.off('draw.update', props.onUpdate);
+            map.off('draw.delete', props.onDelete);
+          },
+          {
+            position: props.position
+          }
+        );
+    }
+
 
     const entryFilter = ['==', 'entry_id', selectedCruise?.entryIdentifier || ''];
 
@@ -95,8 +147,40 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             mapStyle={mapStyle}
                             mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                         >
-
-                            <Source
+                            <DrawControl
+                                position="top-right"
+                                displayControlsDefault={false}
+                                controls={{
+                                polygon: true,
+                                trash: true
+                                }}
+                                defaultMode="draw_polygon"
+                                onCreate={onUpdate}
+                                onUpdate={onUpdate}
+                                onDelete={onDelete}
+                            />
+                            <div className="control-panel">
+                                <h3>Draw Polygon</h3>
+                                {features && Object.keys(features).length > 0 && (
+                                    <div>
+                                        Selected: 
+                                        {Object.values(features).map((feature: any, i: number) => (
+                                            <p key={i}>
+                                                feature: {feature.id}
+                                            </p>
+                                        ))}
+                                    </div>
+                                )}
+                                <div className="source-link">
+                                    <a
+                                    href="https://github.com/visgl/react-map-gl/tree/7.1-release/examples/draw-polygon"
+                                    target="_new"
+                                    >
+                                    View Code ↗
+                                    </a>
+                                </div>
+                            </div>
+                                                        <Source
                                 id="cruises"
                                 type="geojson"
                                 data={{
