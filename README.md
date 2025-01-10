@@ -3,7 +3,7 @@
 ## About
 
 Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 19](https://reactjs.org/).
-- The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend open source technologies.
+- The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend by integrating open source web gis technologies.
 
 **Noteworthy Tooling Included:**
 
