@@ -2,7 +2,7 @@
 
 ## About
 
-Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 18](https://reactjs.org/).
+Tide-pool is a sandbox BRX project, built in [Typescript ^4.9](https://www.typescriptlang.org) using [React ^18](https://reactjs.org/).
 - The goal of this project is to create repositories  of direct links to public federal data with provided select, search, filter, and various display options.
 
 **Noteworthy Tooling Included:**
