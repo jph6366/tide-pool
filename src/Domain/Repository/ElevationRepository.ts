@@ -6,9 +6,9 @@ interface ElevationRepository {
 }
 
 export interface PointRepository extends Omit<ElevationRepository, 'getElevation'> {
-    getElevation(latitude: number, longitude: number): Promise<ElevationPoint>;
+    getPointElevation(latitude: number, longitude: number): Promise<number>;
 }
 
 export interface ProfileRepository extends Omit<ElevationRepository, 'getElevation'> {
-    getElevation(startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number): Promise<ElevationProfile>;
+    getProfileElevation(startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number): Promise<ElevationProfile>;
 }

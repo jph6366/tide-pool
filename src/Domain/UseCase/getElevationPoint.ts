@@ -2,7 +2,7 @@ import { ElevationPoint } from '../Model/Elevation';
 import { PointRepository } from '../Repository/ElevationRepository';
 
 export interface GetElevationPointUseCase {
-    invoke: (latitude: number, longitude: number) => Promise<ElevationPoint>
+    invoke: (latitude: number, longitude: number) => Promise<number>
 }
 
 export class GetElevationPoint implements GetElevationPointUseCase {
@@ -12,6 +12,6 @@ export class GetElevationPoint implements GetElevationPointUseCase {
     }
 
     async invoke(latitude: number, longitude: number) {
-        return this.elevationRepo.getElevation(latitude, longitude);
+        return this.elevationRepo.getPointElevation(latitude, longitude);
     }
 }

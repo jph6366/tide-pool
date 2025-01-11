@@ -7,12 +7,10 @@ import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underRe
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
 import { useCallback, useRef, useState } from 'react';
-import Map, { ControlPosition, Layer, Marker, Popup, Source, useControl } from 'react-map-gl';
+import Map, { ControlPosition, Layer, MapRef, Marker, Popup, Source, useControl } from 'react-map-gl';
 import MapboxDraw  from '@mapbox/mapbox-gl-draw'
-import { useAtom } from 'jotai';
-import JotaiControls from '@/Presentation/WebR/JotaiControls';
+import { atom, useAtom } from 'jotai';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
-
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
     position?: ControlPosition;
@@ -40,14 +38,28 @@ export default function CruiseTableView() {
         setIsOpen,
         filter,
         caseSensitive,
-        setCase
+        setCase,
+        getElevationPoint
     } = useViewModel();
 
     const [open, setOpen] = useState(false);
+    const [latLong, setLatLongElevation] = useState<{
+        latitude: number;
+        longitude: number;
+        elevation: number;
+    } | null >(null);
     const [state, dispatch] = useAtom(mapStateAtom);
     const { mapStyle, viewState } = state;
-    const onMove = useCallback((evt:any) => {
-        dispatch({type: 'setViewState', payload: evt.viewState});
+    
+
+    const onMove = useCallback(async (event:any) => {
+        dispatch({type: 'setViewState', payload: event.viewState});
+        const elevationPoint = await getElevationPoint(event.viewState.latitude,event.viewState.longitude) as number;
+        setLatLongElevation({
+            longitude: event.viewState.longitude,
+            latitude: event.viewState.latitude,
+            elevation: elevationPoint
+        })
       }, []);
     const [selectedCruise, setSelectedCruise] = useState<{
         longitude: number;
@@ -128,18 +140,24 @@ export default function CruiseTableView() {
                     <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-xs w-2/3">FOIA provides that any person has a right to obtain access to federal agency records, except to the extent that such records (or portions of them) are protected from public disclosure by one of nine FOIA exemptions or by one of three special law enforcement record exclusions. This right is enforceable in court.
 
 The Federal FOIA does not provide access to records held by U.S. state or local government agencies or by businesses or individuals. States have their own statutes governing public access to state and local records, and they should be consulted for further information.</p>
-                                        <br/>
-                                        <a href='https://www.gmrt.org/' className='text-blue-900'>Global Multi-Resolution Topography (GMRT)</a>
-                                        <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-xs w-2/6">
-                                        Ryan, W. B. F., S.M. Carbotte, J. Coplan, S. O'Hara, 
-                                        A. Melkonian, R. Arko, R.A. Weissel, V. Ferrini, 
-                                        A. Goodwillie, F. Nitsche, J. Bonczkowski, and R. Zemsky (2009), 
-                                        Global Multi-Resolution Topography (GMRT) synthesis data set, Geochem. Geophys. Geosyst., 10, Q03014,
-                                        </p>
-                                        <br/>
+                    <br/>
+                    <a href='https://www.gmrt.org/' className='text-blue-900'>Global Multi-Resolution Topography (GMRT)</a>
+                    <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-xs w-2/6">
+                    Ryan, W. B. F., S.M. Carbotte, J. Coplan, S. O'Hara, 
+                    A. Melkonian, R. Arko, R.A. Weissel, V. Ferrini, 
+                    A. Goodwillie, F. Nitsche, J. Bonczkowski, and R. Zemsky (2009), 
+                    Global Multi-Resolution Topography (GMRT) synthesis data set, Geochem. Geophys. Geosyst., 10, Q03014,
+                    </p>
+                    <br/>
 
-                                        {/* <JotaiControls/> */}
-                    {cruiseStatus == CruiseStatus.merged  ?(
+                    {/* <JotaiControls/> */}
+                    <div style={{padding: 12, fontFamily: 'sans-serif'}}>
+                        <span>MAP CENTER: </span>
+                        <p>{latLong?.latitude}</p>
+                        <p>{latLong?.longitude}</p>
+                        <p>{latLong?.elevation}</p>
+                    </div>
+{cruiseStatus == CruiseStatus.merged  ?(
                         <Map
                             {...viewState}
                             onMove={onMove}
