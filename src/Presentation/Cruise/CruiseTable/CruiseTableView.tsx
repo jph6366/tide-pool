@@ -6,18 +6,16 @@ import TableView from './Components/TableView';
 import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Map, { ControlPosition, Layer, MapRef, Marker, Popup, Source, useControl } from 'react-map-gl';
-import MapboxDraw  from '@mapbox/mapbox-gl-draw'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import { atom, useAtom } from 'jotai';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
+import GMRTMapToolMode from './CustomDrawMode';
+import { url } from 'inspector';
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
     position?: ControlPosition;
-  
-    onCreate?: (evt: {features: object[]}) => void;
-    onUpdate?: (evt: {features: object[]; action: string}) => void;
-    onDelete?: (evt: {features: object[]}) => void;
   };
   
 
@@ -50,7 +48,6 @@ export default function CruiseTableView() {
     } | null >(null);
     const [state, dispatch] = useAtom(mapStateAtom);
     const { mapStyle, viewState } = state;
-    
 
     const onMove = useCallback(async (event:any) => {
         dispatch({type: 'setViewState', payload: event.viewState});
@@ -61,55 +58,26 @@ export default function CruiseTableView() {
             elevation: elevationPoint
         })
       }, []);
+
     const [selectedCruise, setSelectedCruise] = useState<{
         longitude: number;
         latitude: number;
         entryIdentifier: string;
       } | null>(null);
+
     const [selectedCruises, setSelectedCruises] = useState<{
         [key: string]: {
             longitude: string;
             latitude: string;
             entryIdentifier: string;
         };
-    }>({
-    });
+    }>({});
 
     const [features, setFeatures] = useState({});
-
-    const onUpdate = useCallback((event:any) => {
-      setFeatures(currFeatures => {
-        const newFeatures = {...currFeatures};
-        for (const f of event.features) {
-          newFeatures[f.id] = f;
-        }
-        return newFeatures;
-      });
-    }, []);
-  
-    const onDelete = useCallback((event:any) => {
-      setFeatures(currFeatures => {
-        const newFeatures = {...currFeatures};
-        for (const f of event.features) {
-          delete newFeatures[f.id];
-        }
-        return newFeatures;
-      });
-    }, []);
 
     function DrawControl(props: DrawControlProps) {
         useControl<MapboxDraw>(
           () => new MapboxDraw(props),
-          ({map}: {map: MapRef}) => {
-            map.on('draw.create', props.onCreate);
-            map.on('draw.update', props.onUpdate);
-            map.on('draw.delete', props.onDelete);
-          },
-          ({map}: {map: MapRef}) => {
-            map.off('draw.create', props.onCreate);
-            map.off('draw.update', props.onUpdate);
-            map.off('draw.delete', props.onDelete);
-          },
           {
             position: props.position
           }
@@ -166,17 +134,34 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                         >
                             <DrawControl
-                                position="top-right"
+                                position='top'
                                 displayControlsDefault={false}
-                                controls={{
-                                polygon: true,
-                                trash: true
+                                defaultMode="gmrt_maptool"
+                                modes={{
+                                    gmrt_maptool: GMRTMapToolMode,
+                                    ...MapboxDraw.modes,
                                 }}
-                                defaultMode="draw_polygon"
-                                onCreate={onUpdate}
-                                onUpdate={onUpdate}
-                                onDelete={onDelete}
                             />
+                            
+                            <div className='mapboxgl-ctrl-top' >
+                                <div className='mapboxgl-ctrl-group mapboxgl-ctrl' >
+                                    <button style={{
+                                display:'inline-block'
+                            }} className='mapbox-gl-draw_ctrl-draw-btn'>
+                                <svg width="24px" height="20px" viewBox="0 0 27 27" role="img" xmlns="http://www.w3.org/2000/svg" aria-labelledby="panIconTitle" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" color="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title id="panIconTitle">Pan</title> <path d="M20,14 L20,17 C20,19.209139 18.209139,21 16,21 L10.0216594,21 C8.75045497,21 7.55493392,20.3957659 6.80103128,19.3722467 L3.34541668,14.6808081 C2.81508416,13.9608139 2.94777982,12.950548 3.64605479,12.391928 C4.35756041,11.8227235 5.38335813,11.8798792 6.02722571,12.5246028 L8,14.5 L8,13 L8.00393081,13 L8,11 L8.0174523,6.5 C8.0174523,5.67157288 8.68902517,5 9.5174523,5 C10.3458794,5 11.0174523,5.67157288 11.0174523,6.5 L11.0174523,11 L11.0174523,4.5 C11.0174523,3.67157288 11.6890252,3 12.5174523,3 C13.3458794,3 14.0174523,3.67157288 14.0174523,4.5 L14.0174523,11 L14.0174523,5.5 C14.0174523,4.67157288 14.6890252,4 15.5174523,4 C16.3458794,4 17.0174523,4.67157288 17.0174523,5.5 L17.0174523,11 L17.0174523,7.5 C17.0174523,6.67157288 17.6890252,6 18.5174523,6 C19.3458794,6 20.0174523,6.67157288 20.0174523,7.5 L20.0058962,14 L20,14 Z"></path> </g></svg>
+                            </button>
+                                    <button style={{
+                                display:'inline-block'
+                            }} className='mapbox-gl-draw_ctrl-draw-btn '>
+                                <svg width="24px" height="20px" viewBox="0 0 27 27" xmlns="http://www.w3.org/2000/svg" fill="#000000" stroke="#000000" strokeWidth="0.00024000000000000003" transform="matrix(-1, 0, 0, -1, 0, 0)"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="0.8160000000000001"></g><g id="SVGRepo_iconCarrier"><path d="M1 3v18h22V3zm21 17H2V4h20z"></path><path opacity=".25" d="M2 4h20v16H2z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>                            </button>
+                                                                    <button style={{
+                                display:'inline-block'
+                            }} className='mapbox-gl-draw_ctrl-draw-btn '>
+                                <svg width="24px" height="20px" viewBox="0 0 27 27" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M3 16.5L9 10L13 16L21 6.5" stroke="#000000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+                            </button>
+                                </div>
+                            </div>
+
                             <div className="control-panel">
                                 <h3>Draw Polygon</h3>
                                 {features && Object.keys(features).length > 0 && (
@@ -198,7 +183,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                     </a>
                                 </div>
                             </div>
-                                                        <Source
+                            <Source
                                 id="cruises"
                                 type="geojson"
                                 data={{
