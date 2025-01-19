@@ -60,12 +60,41 @@ export default function CruiseTableView() {
             state.startPoint[0] !== e.lngLat.lng &&
             state.startPoint[1] !== e.lngLat.lat 
         ) {
-            setBounds({
-                north: e.lngLat.lat,
-                west: state.startPoint[0],
-                east: e.lngLat.lng,
-                south: state.startPoint[1] 
-            });
+            if(e.lngLat.lat < state.startPoint[1]) {
+                if(e.lngLat.lng > state.startPoint[0]) {
+                    setBounds({
+                        north: state.startPoint[1],
+                        west: state.startPoint[0],
+                        east: e.lngLat.lng,
+                        south: e.lngLat.lat 
+                    });
+                } else {
+                    setBounds({
+                        north: state.startPoint[1],
+                        west: e.lngLat.lng,
+                        east: state.startPoint[0],
+                        south: e.lngLat.lat 
+                    });
+                }
+            } else {
+                if(e.lngLat.lng > state.startPoint[0]) {
+                    setBounds({
+                        north: e.lngLat.lat,
+                        west: state.startPoint[0],
+                        east: e.lngLat.lng,
+                        south: state.startPoint[1] 
+                    });
+                } else {
+                    setBounds({
+                        north: e.lngLat.lat,
+                        west: e.lngLat.lng,
+                        east: state.startPoint[0],
+                        south: state.startPoint[1] 
+                    });
+                }
+
+            }
+
             this.updateUIClasses({mouse: 'pointer'});
             state.endpoint = [e.lngLat.lng, e.lngLat.lat];
             this.changeMode('simple_select', { featuresID: state.rectangle.id});
