@@ -13,10 +13,12 @@
   color: #fff;
 }
 
-.mapbox-gl-pan_tool {
-  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjRkZGIj48cGF0aCBkPSJNMTYgMEM3LjE2MyAwIDAgNy4xNjMgMCAxNnM3LjE2MyAxNiAxNiAxNiAxNi03LjE2MyAxNi0xNlMyNC44MzcgMCAxNiAwem03LjU5NSAxOS45MjRDMTguMTI0IDI1LjM5NSA4LjM1IDIzLjY1IDguMzUgMjMuNjVzLTEuNzY0LTkuNzU1IDMuNzI2LTE1LjI0NGMzLjA0Mi0zLjA0MiA4LjA4LTIuOTE2IDExLjI2Ny4yNTJzMy4yOTQgOC4yMjUuMjUyIDExLjI2N3ptLTUuNzYtLjk3MmwxLjU2Ni0zLjIyMiAzLjIyMi0xLjU2Ni0zLjIyMi0xLjU2Ni0xLjU2Ni0zLjIyMi0xLjU2NiAzLjIyMi0zLjIyMiAxLjU2NiAzLjIyMiAxLjU2NnoiLz48L3N2Zz4=);
-  width: 20px;
-  height: 20px;
+.mapboxgl-canvas-container.mapboxgl-interactive, .mapboxgl-ctrl-group button.mapboxgl-ctrl-compass {
+  cursor: crosshair;
+}
+
+#sortbox:checked ~ #sortboxmenu {
+  opacity: 1;
 }
 
 @tailwind base;

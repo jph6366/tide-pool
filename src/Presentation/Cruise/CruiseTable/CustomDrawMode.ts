@@ -1,5 +1,21 @@
 import { DrawCustomMode, DrawCustomModeThis } from '@mapbox/mapbox-gl-draw';
 import { GeoJSON } from 'geojson';
+import { atom } from 'jotai';
+interface Rectangle {
+  north: number
+  west: number
+  east: number
+  south: number
+}
+
+export const boundsAtom = atom<Rectangle>({
+  north: 34,
+  west: -74,
+  east: -76,
+  south: 33
+});
+
+
 
 const GMRTMapToolMode: DrawCustomMode = {
     toDisplayFeatures: function (this: DrawCustomModeThis & DrawCustomMode<any, any>, state: any, geojson: GeoJSON, display: (geojson: GeoJSON) => void): void {
