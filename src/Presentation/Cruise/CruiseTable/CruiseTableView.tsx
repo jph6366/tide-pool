@@ -15,6 +15,7 @@ import GMRTMapToolMode, { boundsAtom } from './CustomDrawMode';
 import { url } from 'inspector';
 import { Button } from '@mui/material';
 import ImageView from './Components/ImageView';
+import GMRTPolylineToolMode from './GeodesicDrawMode';
 
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
@@ -188,6 +189,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                 defaultMode={drawMode}
                                 modes={{
                                     gmrt_maptool: GMRTMapToolMode,
+                                    gmrt_polyline: GMRTPolylineToolMode,
                                     ...MapboxDraw.modes,
                                 }}
                             />
@@ -206,7 +208,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             }} className='mapbox-gl-draw_ctrl-draw-btn '>
                                 <svg width="24px" height="20px" viewBox="0 0 27 27" xmlns="http://www.w3.org/2000/svg" fill="#000000" stroke="#000000" strokeWidth="0.00024000000000000003" transform="matrix(-1, 0, 0, -1, 0, 0)"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#CCCCCC" strokeWidth="0.8160000000000001"></g><g id="SVGRepo_iconCarrier"><path d="M1 3v18h22V3zm21 17H2V4h20z"></path><path opacity=".25" d="M2 4h20v16H2z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>                            </button>
                                                                     
-                                    <button onClick={() => setDrawMode('draw_line_string')}
+                                    <button onClick={() => setDrawMode('gmrt_polyline')}
                                     style={{
                                 display:'inline-block'
                             }} className='mapbox-gl-draw_ctrl-draw-btn '>

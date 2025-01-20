@@ -33,6 +33,7 @@
     "@tanstack/query-core": "^5.60.6",
     "@types/geojson": "^7946.0.14",
     "@vis.gl/react-google-maps": "latest",
+    "arc": "^0.1.4",
     "arktype": "^2.0.0-rc.24",
     "buffer": "^6.0.3",
     "flag-icons": "^7.2.3",
