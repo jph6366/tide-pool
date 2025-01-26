@@ -1,27 +1,25 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable camelcase */
 import useViewModel from './Control/CruiseTable';
-import { Cruise, CruiseSelection } from '@/Domain/Model/Cruise';
+import { Cruise } from '@/Domain/Model/Cruise';
 import TableView from './Components/TableView';
-import { CruiseAtomWithCache, CruiseStatus, rejectedCruiseAtomWithCache, underReviewCruiseAtomWithCache } from '@/Data/DataSource/API/Entity/CruiseEntity';
+import { CruiseStatus } from '@/Data/DataSource/API/Entity/CruiseEntity';
 import RejectedTableView from './Components/RejectedTableView';
 import UnderReviewTableView from './Components/underReviewTableView';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import Map, { ControlPosition, Layer, MapRef, Marker, Popup, Source, useControl } from 'react-map-gl';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import Map, { ControlPosition, Layer, MapRef, Source, useControl } from 'react-map-gl';
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
-import GMRTMapToolMode, { boundsAtom } from './CustomDrawMode';
-import { url } from 'inspector';
-import { Button } from '@mui/material';
+import GMRTMapToolMode, { boundsAtom } from './RectanglurDrawMode';
 import ImageView from './Components/ImageView';
-import GMRTPolylineToolMode from './GeodesicDrawMode';
+import GMRTPolylineToolMode,{ profileAtom }  from './GeodesicDrawMode';
+import ProfileView from './Components/ProfileView';
+import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
+import useDrawMode from './Control/DrawMode';
+import DrawControl from './Control/DrawControl';
 
 
-type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
-    position?: ControlPosition;
-  };
-  
 
 export default function CruiseTableView() {
 
@@ -41,8 +39,15 @@ export default function CruiseTableView() {
         filter,
         caseSensitive,
         setCase,
-        getElevationPoint
+        getElevationPoint,
+        getElevationProfile,
     } = useViewModel();
+
+    const {
+        drawMode, setDrawMode,
+        GMRTPolylineToolMod
+    } = useDrawMode();
+
 
     const [open, setOpen] = useState(false);
     const [latLong, setLatLongElevation] = useState<{
@@ -50,10 +55,11 @@ export default function CruiseTableView() {
         longitude: number;
         elevation: number;
     } | null >(null);
-    const [drawMode, setDrawMode] = useState('simple_select')
+
 
     const [state, dispatch] = useAtom(mapStateAtom);
     const bounds = useAtomValue(boundsAtom);
+    
     const setBounds = useSetAtom(boundsAtom);
     GMRTMapToolMode.onClick = function(state, e) {
         if (
@@ -104,6 +110,9 @@ export default function CruiseTableView() {
         const startPoint = [e.lngLat.lng, e.lngLat.lat];
         state.startPoint = startPoint;        
     }
+
+
+    
     const { mapStyle, viewState } = state;
 
     const onMove = useCallback(async (event:any) => {
@@ -130,16 +139,103 @@ export default function CruiseTableView() {
         };
     }>({});
 
+    const profile =  useAtomValue(profileAtom);
+    const setProfile = useSetAtom(profileAtom);
+
+
+    const [arcs, setCircleArcs] = useState<Coordinate[]>(
+        []
+    )
     const [features, setFeatures] = useState({});
 
-    function DrawControl(props: DrawControlProps) {
-        useControl<MapboxDraw>(
-          () => new MapboxDraw(props),
-          {
-            position: props.position
+    const onUpdate = useCallback((event:any) => {
+      setFeatures(async currFeatures => {
+        const newFeatures = {...currFeatures};
+        for (const f of event.features) {
+          newFeatures[f.id] = f;
+          if(f.geometry.type == 'LineString') {
+            const processedCoords: Coordinate[] = f.geometry.coordinates.map(([latitude, longitude]:any) => ({ latitude, longitude }));
+            setCircleArcs(processedCoords)
+            setProfile(await getElevationProfile(processedCoords))
           }
-        );
-    }
+        }
+        return newFeatures;
+      });
+    }, []);
+  
+    const onDelete = useCallback((event:any) => {
+      setFeatures(currFeatures => {
+        const newFeatures = {...currFeatures};
+        for (const f of event.features) {
+          delete newFeatures[f.id];
+        }
+        return newFeatures;
+      });
+    }, []);
+
+    const mapRef = React.useRef<MapRef>(null);
+    const [isGridActive, setIsGridActive] = useState(false);
+    const [gridControlList, setGridControlList] = useState<any[]>([]);
+
+
+    // Function to add the map grid
+    const addMapGrid = useCallback((map: mapboxgl.Map) => {
+        console.log('Adding grid...');
+        // Example: return a list of layers or controls added
+        return ['gridLayer1', 'gridLayer2'];
+    }, []);
+
+    // Function to remove the map grid
+    const removeMapGrid = useCallback((map: mapboxgl.Map, gridList: any[]) => {
+        console.log('Removing grid...');
+    }, []);
+
+    // Function to add map labels
+    const addMapLabel = useCallback((map: mapboxgl.Map) => {
+        console.log('Adding labels...');
+    }, []);
+
+    // Function to remove map labels
+    const removeMapLabel = useCallback((map: mapboxgl.Map) => {
+        console.log('Removing labels...');
+    }, []);
+
+
+    // Toggle grid and labels on/off
+    const handleToggleGrid = () => {
+        if (isGridActive && gridControlList.length && mapRef.current) {
+            const map = mapRef.current.getMap();
+            removeMapGrid(map, gridControlList);
+            removeMapLabel(map);
+            setGridControlList([]);
+            setIsGridActive(false);
+        } else if (!isGridActive && mapRef.current) {
+            const map = mapRef.current.getMap();
+            const newGrid = addMapGrid(map);
+            setGridControlList(newGrid);
+            addMapLabel(map);
+            setIsGridActive(true);
+        }
+    };
+
+    useEffect(() => {
+        const map = mapRef.current?.getMap();
+        if (map) {
+            const handleLoad = () => {
+                if (isGridActive) {
+                    const initialGrid = addMapGrid(map);
+                    setGridControlList(initialGrid);
+                    addMapLabel(map);
+                }
+            };
+            map.on('load', handleLoad);
+
+            return () => {
+                map.off('load',handleLoad);
+            };
+        }
+    }, [addMapGrid, addMapLabel, isGridActive]);
+
 
 
     const entryFilter = ['==', 'entry_id', selectedCruise?.entryIdentifier || ''];
@@ -177,6 +273,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
 
 {cruiseStatus == CruiseStatus.merged  ?(
                         <Map
+                            ref={mapRef}
                             {...viewState}
                             onMove={onMove}
                             style={{display:'inline-flex' , width: '90%', height: '600px', marginLeft: '5%'}}
@@ -184,15 +281,17 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                             mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
                         >
                             <DrawControl
-                                position='top'
+                                position='top-left'
                                 displayControlsDefault={false}
                                 defaultMode={drawMode}
+                                controls={{
+                                    trash: true
+                                }}
                                 modes={{
                                     gmrt_maptool: GMRTMapToolMode,
-                                    gmrt_polyline: GMRTPolylineToolMode,
+                                    gmrt_polyline: GMRTPolylineToolMod,
                                     ...MapboxDraw.modes,
-                                }}
-                            />
+                                }} onCreate={onUpdate} onUpdate={onUpdate} onDelete={onDelete}                            />
                             
                             <div className='mapboxgl-ctrl-top' >
                                 <div className='mapboxgl-ctrl-group mapboxgl-ctrl' >
@@ -228,7 +327,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                     width: '86px',
                                     marginRight: '1em'
                                 }}>
-                                    <button className='mapbox-gl-draw_ctrl-draw-btn'>
+                                    <button onClick={handleToggleGrid} className='mapbox-gl-draw_ctrl-draw-btn'>
                                         <svg width="23px" height="23px" viewBox="0 -7.5 186 186" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <g clipPath="url(#clip0)"> <path d="M185.696 74.2188C185.375 55.2226 177.659 39.0104 162.744 26.0344C150.784 15.6176 136.097 8.031 119.101 3.47659C112.524 1.71949 105.574 0.214102 98.304 0.214102C94.48 0.202117 90.6677 0.649697 86.9515 1.5472C69.8893 5.72476 57.3763 10.5515 46.3905 17.2153C29.9619 27.1811 19.5299 37.0811 12.5661 49.3214C3.15379 65.8443 -0.273628 82.8985 2.08723 101.46C3.48155 112.387 7.49047 123.169 14.7074 135.389C20.397 145.017 27.6938 151.926 37.0191 156.501C41.9213 158.915 46.7436 161.249 51.7399 163.377C64.9664 169.013 78.5337 171.294 95.7361 170.77C96.8097 170.624 98.1235 170.465 99.6178 170.286C103.607 169.808 109.07 169.159 114.385 168.197C129.24 165.519 141.406 160.977 151.58 154.313C154.977 152.128 158.079 149.521 160.811 146.555C165.872 140.901 170.191 134.631 173.664 127.896C182.094 111.788 186.029 94.2303 185.696 74.2188ZM32.3362 36.3977C45.1629 24.7542 59.0906 16.6586 74.9116 11.6525L77.6534 10.7838L75.5724 12.7596C65.8472 22.0291 59.5436 33.5797 55.1348 42.604L54.9551 42.9822L54.5279 42.9758C49.0915 42.9229 37.1392 39.939 32.4765 37.4721L31.6431 37.0282L32.3362 36.3977ZM8.65123 84.6646C10.1916 69.2088 15.9076 55.4904 26.1268 42.7332L26.4065 42.3878L51.8866 49.9138L51.6399 50.5772C47.5822 61.4626 44.7175 72.7514 43.0956 84.2471L43.0151 84.8111L8.57717 85.4073L8.65123 84.6646ZM21.0909 133.281L20.7839 132.81C12.2726 119.595 8.21035 106.155 8.37068 91.7266L8.37717 91.0704H41.6345L42.4016 124.217L21.0909 133.281ZM50.7396 155.401C41.3409 151.264 31.623 146.987 24.6449 138.321L24.1516 137.71L24.8384 137.333C31.0752 133.838 37.5118 131.803 42.9813 130.271L43.7083 130.072L43.8219 130.808C45.4161 140.714 48.1438 148.339 52.3995 154.797L53.6399 156.674L50.7396 155.401ZM85.724 163.403L85.1307 163.449C84.0272 163.542 82.936 163.589 81.8552 163.589C77.3821 163.497 72.9304 162.936 68.5748 161.917C67.7719 161.671 67.0929 161.131 66.6742 160.406L65.7135 158.848C63.182 154.73 60.6309 152.583 58.1097 146.216C55.5976 139.871 53.5809 133.816 52.9272 128.261L52.8622 127.67L53.4426 127.541C64.2581 125.066 75.2738 123.552 86.3595 123.019L87.0865 122.979L85.724 163.403ZM87.3916 116.371L52.0468 121.437L51.9535 120.781C50.4923 110.61 50.7201 100.252 51.1329 91.4601L51.1596 90.8303H88.4522L87.3916 116.371ZM88.6587 84.0335H52.093L52.158 83.3108C53.0986 73.2857 55.5133 62.9085 59.5353 51.5837L59.7086 51.0991L88.6593 53.4003L88.6587 84.0335ZM88.8722 46.617L62.2921 45.0038L62.6725 44.1352C69.6089 28.1967 78.4201 16.8101 90.4133 8.32202L91.5667 7.50645L88.8722 46.617ZM120.322 12.9468C131.187 16.1422 145.148 21.182 156.807 31.9182L157.508 32.5635L155.787 33.4384C150.277 36.2435 145.077 38.8891 138.792 39.8706L138.351 39.9436L138.118 39.5564C137.197 38.0574 136.3 36.539 135.403 35.0206C130.994 27.6076 126.438 19.9359 119.695 14.0812L117.393 12.0854L120.322 12.9468ZM97.6899 14.3193C97.7704 12.668 97.8503 11.0039 97.9236 9.33976L97.9703 8.37829L98.8577 8.75578C112.017 14.3852 121.416 24.3316 129.333 41.0076L129.7 41.7819L126.599 42.3588C116.814 44.196 107.569 45.9331 97.7126 46.2512L97.0389 46.2712L97.0259 45.6013C96.7169 35.1026 97.1901 25.0065 97.6906 14.318L97.6899 14.3193ZM96.911 53.6326L133.067 48.1818L133.267 48.6458C137.563 58.3005 139.591 69.1081 139.464 81.6841V82.3203L96.9084 83.9051L96.911 53.6326ZM96.504 90.5651L139.36 89.219L139.34 89.9288C139.046 99.4016 137.983 108.834 136.159 118.136L136.045 118.713L95.4842 115.821L96.504 90.5651ZM112.393 161.367C107.99 162.077 103.575 162.674 98.9057 163.303C97.3115 163.522 95.6906 163.741 94.0295 163.967L93.2356 164.079L95.0298 122.737L95.6439 122.717C106.917 122.292 118.536 123.162 133.31 125.528L134.117 125.658L133.83 126.414C133.53 127.209 133.23 127.999 132.937 128.788C130.34 135.717 127.172 141.844 123.905 148.195C120.314 155.177 113.594 161.174 112.391 161.366L112.393 161.367ZM161.278 133.565C154.748 146.097 143.489 151.673 132.303 155.837L130.455 156.527L131.502 154.862C136.398 147.119 139.593 138.677 142.975 129.739L143.869 127.373L161.645 132.862L161.278 133.565ZM177.159 88.5821C175.979 102.719 172.551 114.561 166.381 125.847L166.133 126.304L146.023 121.066L149.472 88.7944L177.219 87.8401L177.159 88.5821ZM177.513 80.307L177.439 80.871L149.419 81.8531L149.338 81.2556C149.098 79.4488 148.884 77.622 148.671 75.8513C148.205 71.8467 147.717 67.7156 146.884 63.7506C146.057 59.8453 144.89 56.0859 143.648 52.1071C143.122 50.3964 142.568 48.6329 142.054 46.8623L141.888 46.2925L162.585 37.7587L162.892 37.9838C172.282 44.9187 179.386 65.4952 177.512 80.3057L177.513 80.307Z" fill="#000000"></path> </g> <defs> <clipPath id="clip0"> <rect width="185" height="171" fill="white" transform="translate(0.777344)"></rect> </clipPath> </defs> </g></svg>
                                     </button>
                                     <button className='mapbox-gl-draw_ctrl-draw-btn'>
@@ -256,8 +355,8 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                 </div>
                             </div>
 
-
-                            <div className='mapboxgl-ctrl-bottom-right'>
+{ drawMode != 'gmrt_polyline' ?(
+                                <div className='mapboxgl-ctrl-bottom-right'>
                                 <div className="mapboxgl-ctrl-group mapboxgl-ctrl"
                                 style={{
                                     display: 'inline-flex',
@@ -319,6 +418,51 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                 </div>
                                     
                             </div>
+): (
+    <div className='mapboxgl-ctrl-bottom-right'>
+        <div className="mapboxgl-ctrl-group mapboxgl-ctrl"
+        style={{
+            display: 'inline-block',
+            flexWrap: 'wrap',
+            margin: '1em',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minWidth: '300px',
+            minHeight: '90px',
+            maxWidth: '500px',
+            marginRight: '1em'
+        }}>
+            <div className='inline-flex m-2 text-center justify-center'>
+                <p className='text-sm'>GMRT MapTool                
+                    <p className=' text-xs'>Select a line on the map to draw a profile. Click to start a line and double-click to end.</p>
+                </p>
+                <div className="relative inline-flex self-center">
+                    <svg className="text-white bg-blue-950 absolute -top-0 -right-0  pointer-events-none p-2 rounded" xmlns="http://www.w3.org/2000/svg"  
+                    width="23px" height="20px" viewBox="0 0 27 27" version="1.1">
+                        <title>F09B337F-81F6-41AC-8924-EC55BA135736</title>
+                        <g stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
+                            <g  transform="translate(-539.000000, -199.000000)" fill="#ffffff" fillRule="nonzero">
+                                <g transform="translate(538.000000, 183.521208)">
+                                    <polygon  transform="translate(20.000000, 18.384776) rotate(135.000000) translate(-20.000000, -18.384776) " points="33 5.38477631 33 31.3847763 29 31.3847763 28.999 9.38379168 7 9.38477631 7 5.38477631"/>
+                                </g>
+                            </g>
+                        </g>
+                    </svg>
+                    <select className="text-xs font-bold rounded border-2 border-blue-950 text-gray-600 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none">
+                        <option>Plain Text Format</option>
+                        <option>GeoJSON Format</option>
+                    </select>
+            </div>  
+            </div>
+            {profile.length >= 2 ?(
+            <ProfileView profile={profile} />
+            ): (
+            <div className="w-40 h-40"/>
+            )}
+        </div>
+            
+    </div>
+)}
 
                             <Source
                                 id="cruises"
@@ -463,12 +607,12 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
                                         <p>Merged</p>
                                     </div>
                                 </a>
-                                <a onClick={() => setStatus(CruiseStatus.underReview)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
+                                <a onClick={() => setStatus(CruiseStatus.merged)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
                                     <div className="py-2 px-8 bg-indigo-100 text-gray-600 hover:text-indigo-700 hover:bg-yellow-400 rounded-full ">
                                         <p>Under Review</p>
                                     </div>
                                 </a>
-                                <a onClick={() => setStatus(CruiseStatus.isRejected)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
+                                <a onClick={() => setStatus(CruiseStatus.merged)} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
                                     <div className="py-2 px-8 bg-indigo-100 text-gray-600 hover:text-indigo-700 hover:bg-red-400 rounded-full ">
                                         <p>Rejected</p>
                                     </div>

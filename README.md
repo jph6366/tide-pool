@@ -4,6 +4,10 @@
 
 Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 19](https://reactjs.org/).
 - The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend by integrating open source web gis technologies.
+- Some other modern iterations of public-facing applications/tools that utilize GMRT-like web maps and tools.
+  - Bedrock Ocean Exploration - [Mission](https://www.bedrockocean.com/mission) - [Mosaic](https://mosaic.bedrockocean.com/)
+  - Seabed 2030 - [Mission](https://ccom.unh.edu/project/bathymetry-globe) - [BathyGlobe](https://seabed2030.org/)
+  - NOAA Digital Coast - [Mission](https://coast.noaa.gov/digitalcoast/about/)
 
 **Noteworthy Tooling Included:**
 
@@ -11,6 +15,14 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [Jotai](https://jotai.org/) - Atomic approach to global React state management
 - [TailwindCSS](https://tailwindcss.com) - CSS utilities
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
+
+**Original Tooling In [GMRTMapTool](https://www.gmrt.org/GMRTMapTool/):**
+
+- JQuery
+- OpenLayers
+- Google Maps
+- Google Charts
+
 
 **Data and Metadata Provided by:**
 

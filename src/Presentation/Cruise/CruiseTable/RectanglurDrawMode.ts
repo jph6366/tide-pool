@@ -104,14 +104,14 @@ GMRTMapToolMode.onStop = function(state) {
         features: [state.rectangle.toGeoJSON()]
       });
     } else {
-      this.deleteFeature([state.rectangle.id], { silent: true });
+      this.deleteFeature(state.rectangle.id, { silent: true });
       this.changeMode('simple_select', {}, { silent: true });
     }
 }
 
-GMRTMapToolMode.toDisplayFeatures = function(state, geojson, display) {
+GMRTMapToolMode.toDisplayFeatures = function(state, geojson:any, display) {
     const isActivePolygon = geojson.properties.id === state.rectangle.id;
-    geojson.properties.active = isActivePolygon ? "true" : "false";
+    geojson.properties.active = isActivePolygon ? 'true' : 'false';
     if (!isActivePolygon) return display(geojson);
 
     // Only render the rectangular polygon if it has the starting point
@@ -120,7 +120,7 @@ GMRTMapToolMode.toDisplayFeatures = function(state, geojson, display) {
 }
 
 GMRTMapToolMode.onTrash = function(state) {
-    this.deleteFeature([state.rectangle.id], {silent: true});
+    this.deleteFeature(state.rectangle.id, {silent: true});
     this.changeMode('simple_select');
 }
 

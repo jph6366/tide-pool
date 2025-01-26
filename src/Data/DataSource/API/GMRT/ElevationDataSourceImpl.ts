@@ -1,12 +1,12 @@
 
+import { ElevationProfile } from '@/Domain/Model/Elevation';
 import { ElevationDataSource } from '../../ElevationDataSource';
 import { Coordinate } from '../Parameter/CoordinateParameter';
 
-export interface PointDataSource extends Omit<ElevationDataSource, 'getElevation'> {
-    getElevation(latitude: number, longitude: number): Promise<number>;
-}
-
-export default class ElevationDataSourceImpl implements PointDataSource {
+export default class ElevationDataSourceImpl implements ElevationDataSource {
+    getProfile(): Promise<ElevationProfile> {
+        throw new Error('Method not implemented.');
+    }
 
 
     async getElevation(latitude: number, longitude: number): Promise<number> {

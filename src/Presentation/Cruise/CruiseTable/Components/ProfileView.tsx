@@ -1,20 +1,45 @@
+import { Feature, LineString } from 'geojson';
+import { useEffect, useRef, useState } from 'react';
+import BillboardJS, {IChart} from '@billboard.js/react';
+import bb, { line, areaStep } from 'billboard.js';
 
-
-interface ImageViewProps {
-    rectangle: any
+interface ProfileViewProps {
+    profile:any
 }
 
+export default function ProfileView({ profile }: ProfileViewProps) {
 
-export default function ProfileView({rectangle}: ImageViewProps) {
+    const chartComponent = useRef<IChart>(null);
+    const options = {
+        data: {
+            x: 'x',
+            columns: [
+                ['x', ...profile.map((distance: any) => `${distance[3]}`)],
+                ['ProfileServer', ...profile.map((distance: any) => `${distance[2]}`)]
+            ],
+            type: line()
+        }
+        
+    };
+
+    useEffect(() => {
+        // get the instance from ref
+		const chart = chartComponent.current?.instance;
+
+    }, []);
 
 
-                        return (
-                            <div className='w-40 h-40'>
-                                <div>
-                                    <img  id="gridimg" src={'https://www.gmrt.org/services/ImageServer.php?maptool=1&north='
-                                     + rectangle.north  + '&west=' + rectangle.west + '&east=' + 
-                                     rectangle.east + '&south=' + rectangle.south + '&mask=0'} />
-                                </div>
-                            </div>
-                        )
+
+    return (
+        <div className="">
+            <div>
+                <BillboardJS
+                    bb={bb}
+                    options={options}
+                    ref={chartComponent}
+                    className='bb w-max h-40'
+                />
+            </div>
+        </div>
+    );
 }

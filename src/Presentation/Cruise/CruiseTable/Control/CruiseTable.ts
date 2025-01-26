@@ -8,6 +8,9 @@ import * as en from  'i18n-iso-countries/langs/en.json';
 import ElevationDataSourceImpl from '@/Data/DataSource/API/GMRT/ElevationDataSourceImpl';
 import { ElevationRepositoryImpl } from '@/Data/Repository/ElevationRepositoryImpl';
 import { GetElevationPoint } from '@/Domain/UseCase/getElevationPoint';
+import ProfileDataSourceImpl from '@/Data/DataSource/API/GMRT/ProfileDataSourceImpl';
+import { GetElevationProfile } from '@/Domain/UseCase/getElevationProfile';
+import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 
 
 export default function ViewModel() {
@@ -83,6 +86,14 @@ export default function ViewModel() {
         const point = await getElevationPointUseCase.invoke(lat, long);
         return point
     }
+
+    async function getElevationProfile(coordinates:Coordinate[]) {
+        const profileDataSourceImpl = new ProfileDataSourceImpl();
+        const profileRepositoryImpl = new ElevationRepositoryImpl(profileDataSourceImpl);
+        const getElevationProfileUseCase = new GetElevationProfile(profileRepositoryImpl);
+        const profile = await getElevationProfileUseCase.invoke(coordinates);
+        return profile
+    }
       
 
     return {
@@ -97,7 +108,8 @@ export default function ViewModel() {
         isOpen, setIsOpen,
         filter, setFilter,
         caseSensitive, setCase,
-        getElevationPoint
+        getElevationPoint,
+        getElevationProfile
     };
     
 
