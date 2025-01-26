@@ -18,6 +18,7 @@ import ProfileView from './Components/ProfileView';
 import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 import useDrawMode from './Control/DrawMode';
 import DrawControl from './Control/DrawControl';
+import { Feature } from 'geojson';
 
 
 
@@ -150,7 +151,7 @@ export default function CruiseTableView() {
 
     const onUpdate = useCallback((event:any) => {
       setFeatures(async currFeatures => {
-        const newFeatures = {...currFeatures};
+        const newFeatures: { [key: string]: Feature } = {...currFeatures};
         for (const f of event.features) {
           newFeatures[f.id] = f;
           if(f.geometry.type == 'LineString') {
@@ -165,7 +166,7 @@ export default function CruiseTableView() {
   
     const onDelete = useCallback((event:any) => {
       setFeatures(currFeatures => {
-        const newFeatures = {...currFeatures};
+        const newFeatures: { [key: string]: Feature } = {...currFeatures};
         for (const f of event.features) {
           delete newFeatures[f.id];
         }

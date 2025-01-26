@@ -9,7 +9,8 @@ type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   onDelete: (evt: { features: object[] }) => void;
 };
 
-const DrawControl: React.FC<DrawControlProps> = (props) => {
+const DrawControl: React.FC<DrawControlProps> = (props) => {    // @ts-expect-error expect
+
   useControl<MapboxDraw>(
     () => new MapboxDraw(props),
     ({ map }: { map: MapRef }) => {

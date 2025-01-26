@@ -6,8 +6,6 @@ import GMRTPolylineToolMode, { profileAtom } from '../GeodesicDrawMode';
 import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 import arc from 'arc';
 import { useDrawMode } from './Atoms/drawModeAtom';
-import Maplibre from 'maplibre-gl';
-import {GridConfig} from 'maplibre-grid';
 
 export default function DrawMode() {
 
@@ -20,6 +18,7 @@ export default function DrawMode() {
   }
   
   const GMRTPolylineToolMod = GMRTPolylineToolMode
+    // @ts-expect-error expect
 
   GMRTPolylineToolMod.clickAnywhere = function (state: any, e: any) {
       if (
@@ -33,12 +32,14 @@ export default function DrawMode() {
             e,
             state.line.coordinates[state.currentVertexPosition + 1]
           ))
-      ) {
+      ) {    // @ts-expect-error expect
+
         return this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, {
           featureIds: [state.line.id],
         });
       }
-    
+        // @ts-expect-error expect
+
       this.updateUIClasses({ mouse: MapboxDraw.constants.cursors.ADD });
     
       // Update the current vertex
@@ -64,15 +65,19 @@ export default function DrawMode() {
         latitude: lat,
         longitude: lng,
       }));
-  };
-  GMRTPolylineToolMod.clickOnVertex = function(state:any) {
+  };    // @ts-expect-error expect
+
+  GMRTPolylineToolMod.clickOnVertex = function(state:any) {    // @ts-expect-error expect
+
       return this.changeMode(MapboxDraw.constants.modes.SIMPLE_SELECT, { featureIds: [state.line.id] });
   };
 
   GMRTPolylineToolMod.onClick = function(state:any, e:any) {
-      if(MapboxDraw.lib.CommonSelectors.isVertex(e)) {
+      if(MapboxDraw.lib.CommonSelectors.isVertex(e)) {    // @ts-expect-error expect
+
           return this.clickOnVertex(state, e);
-      }
+      }    // @ts-expect-error expect
+
       this.clickAnywhere(state, e);
   };
     
@@ -89,7 +94,7 @@ const [features, setFeatures] = useState({});
 
   function DrawControl(props: DrawControlProps) {
 
-    
+    // @ts-expect-error expect
       useControl<MapboxDraw>(
         () => new MapboxDraw(props),
         ({map}: {map: MapRef}) => {
@@ -108,15 +113,6 @@ const [features, setFeatures] = useState({});
       );
       return null;
   }
-
-
-  function Grid(props: GridConfig) {
-
-    
-      return null;
-  }
-
-
 
 
   return {
