@@ -4,6 +4,7 @@ import CruiseView from './CruiseView';
 import { useEffect, useRef, useState } from 'react';
 
 interface TableProps {
+    getCountryCode: any
     filter: any
     filterCruises: any
     aggregateTotalArea: any
@@ -19,6 +20,7 @@ interface TableProps {
 }
 
 export default function TableView( {
+    getCountryCode,
     filter,
     filterCruises,
     aggregateTotalArea,
@@ -174,24 +176,24 @@ export default function TableView( {
                         </thead>
                         <tbody>
                         {selectedCruises && Object.keys(selectedCruises).length > 0 ? (
-                            <div>
+                            <tr>
                                 Selected: 
                                 {Object.values(selectedCruises).map((entry: any, i: number) => (
-                                    <p key={i}>
+                                    <td key={i}>
                                         Entry ID: {entry.entryIdentifier}
-                                    </p>
+                                    </td>
                                 ))}
-                            </div>
+                            </tr>
                         ) : (
-                            <div>
-                                <p>Awaiting Selection</p>
-                            </div>
+                            <tr>
+                                <td>Awaiting Selection</td>
+                            </tr>
                         )}
 
                             {data.map((cruise: Cruise, i:number) => {
                                 if(i < 113) {
                                     return (
-                                        <CruiseView key={i} cruise={cruise}
+                                        <CruiseView key={i} cruise={cruise} getCountryCode={getCountryCode}
                                         selectedCruises={selectedCruises} setSelected={setSelectedCruise} 
                                         selectCruise={selectCruise} selectAll={checkAll} />
                                     );

@@ -42,6 +42,7 @@ export default function CruiseTableView() {
         setCase,
         getElevationPoint,
         getElevationProfile,
+        getCountryCode
     } = useViewModel();
 
     const {
@@ -435,7 +436,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
         }}>
             <div className='inline-flex m-2 text-center justify-center'>
                 <p className='text-sm'>GMRT MapTool                
-                    <p className=' text-xs'>Select a line on the map to draw a profile. Click to start a line and double-click to end.</p>
+                    <span className=' text-xs'>Select a line on the map to draw a profile. Click to start a line and double-click to end.</span>
                 </p>
                 <div className="relative inline-flex self-center">
                     <svg className="text-white bg-blue-950 absolute -top-0 -right-0  pointer-events-none p-2 rounded" xmlns="http://www.w3.org/2000/svg"  
@@ -624,6 +625,7 @@ The Federal FOIA does not provide access to records held by U.S. state or local 
 
                     {cruiseStatus == CruiseStatus.merged  ?(
                         <TableView 
+                            getCountryCode={getCountryCode}
                             sortCruises={sortCruises}
                             filter={filter} filterCruises={filterCruises} setFilter={setFilter}
                             aggregateTotalArea={aggregateTotalArea} setTotalArea={setTotalArea}

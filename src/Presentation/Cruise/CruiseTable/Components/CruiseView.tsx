@@ -1,10 +1,9 @@
 import { Cruise } from '@/Domain/Model/Cruise';
-import useViewModel from '../Control/CruiseTable';
-import { useCallback, useEffect, useState } from 'react';
 import mapStateAtom from '@/Presentation/JotaiStore/Store';
 import { useAtom } from 'jotai';
 
 interface CruiseViewProps {
+    getCountryCode: any;
     cruise: Cruise;
     selectedCruises: any;
     setSelected: any;
@@ -13,12 +12,8 @@ interface CruiseViewProps {
 }
 
 
-export default function CruiseView({cruise: cruise, selectedCruises: cruises, setSelected: selected, selectCruise: select, selectAll: allChecked}:CruiseViewProps) {
+export default function CruiseView({getCountryCode: getCountryCode, cruise: cruise, selectedCruises: cruises, setSelected: selected, selectCruise: select, selectAll: allChecked}:CruiseViewProps) {
 
-
-                const {
-                    getCountryCode,
-                } = useViewModel();
                 const [state, dispatch] = useAtom(mapStateAtom);
                 const viewState = state.viewState;
                 const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
