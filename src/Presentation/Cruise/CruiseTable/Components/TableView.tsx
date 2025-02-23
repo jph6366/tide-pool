@@ -36,11 +36,13 @@ export default function TableView( {
 } : TableProps ) {
 
     useEffect(() => {
-        const area = data.filter(a => a.total_area !== null && !isNaN(a.total_area))
+        const area = data
+        .filter(a => a.total_area !== null && !isNaN(a.total_area))
         .map(a => a.total_area).reduce((a,b) => +a + +b, 0)
         setTotalArea(area);
-    }, []);
+    }, [data]);
 
+    const [dummy, setDummy] = useState(0);
 
     const handleFilterChange = (event: React.FormEvent<HTMLFormElement>) => {
         const searchInput = event.currentTarget.elements[0] as HTMLInputElement;
@@ -50,12 +52,12 @@ export default function TableView( {
 
     const handleAscSortClick = () => {
         sortCruises(data, CruiseSelection.ascendingOrder)
-        setIsOpen((prev) => !prev);
+        setDummy(prev => prev + 1)
     };
 
     const handleDescSortClick = () => {
         sortCruises(data, CruiseSelection.descendingOrder)
-        setIsOpen((prev) => !prev);
+        setDummy(prev => prev + 1)
     };
 
 
@@ -75,12 +77,12 @@ export default function TableView( {
             <div className='sm:flex items-center justify-between'>
                 <div className="sm:flex items-center justify-between">
                     <div className="flex items-center">
-                        <a onClick={handleAscSortClick} className="rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" href=" javascript:void(0)">
+                        <a onClick={handleAscSortClick} className="rounded-full focus:outline-none focus:ring-2  focus:bg-indigo-50 focus:ring-indigo-800" >
                             <div className="py-2 px-8 bg-teal-400 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full">
                                 <p>Newest</p>
                             </div>
                         </a>
-                        <a onClick={handleDescSortClick} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" href="javascript:void(0)">
+                        <a onClick={handleDescSortClick} className="rounded-full focus:outline-none focus:ring-2 focus:bg-indigo-50 focus:ring-indigo-800 ml-4 sm:ml-8" >
                             <div className="py-2 px-8 bg-yellow-400 text-gray-600 hover:text-indigo-700 hover:bg-indigo-100 rounded-full ">
                                 <p>Oldest</p>
                             </div>

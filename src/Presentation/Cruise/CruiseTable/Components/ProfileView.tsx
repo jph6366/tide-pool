@@ -9,37 +9,45 @@ interface ProfileViewProps {
 
 export default function ProfileView({ profile }: ProfileViewProps) {
 
-    const chartComponent = useRef<IChart>(null);
-    const options = {
+    const [chartOptions, setChartOptions] = useState({
         data: {
             x: 'x',
             columns: [
                 ['x', ...profile.map((distance: any) => `${distance[3]}`)],
                 ['ProfileServer', ...profile.map((distance: any) => `${distance[2]}`)]
             ],
-            type: line()
-        }
-        
-    };
+            type: line(),
+        },
+    });
+
+    const chartComponent = useRef<IChart>(null);
 
     useEffect(() => {
-        // get the instance from ref
-		const chart = chartComponent.current?.instance;
+        // Update chart options whenever profile changes
+        setChartOptions({
+            data: {
+                x: 'x',
+                columns: [
+                    ['x', ...profile.map((distance: any) => `${distance[3]}`)],
+                    ['ProfileServer', ...profile.map((distance: any) => `${distance[2]}`)],
+                ],
+                type: line(),
+            },
+        });
+    }, [profile]); // Re-run effect when profile changes
 
+    useEffect(() => {
+        const chart = chartComponent.current?.instance;
     }, []);
 
-
-
     return (
-        <div className="">
-            <div>
-                <BillboardJS
-                    bb={bb}
-                    options={options}
-                    ref={chartComponent}
-                    className='bb w-max h-40'
-                />
-            </div>
+        <div>
+            <BillboardJS
+                bb={bb}
+                options={chartOptions}
+                ref={chartComponent}
+                className='bb w-max h-40'
+            />
         </div>
     );
 }
