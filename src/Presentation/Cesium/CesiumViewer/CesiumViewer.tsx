@@ -32,7 +32,7 @@ const [open, setOpen] = useState(false);
       }),
       new Cesium.ProviderViewModel({
         name: 'GMRT',
-        iconUrl: Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/earth.png'), // Replace with an appropriate icon
+        iconUrl: Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/stamenWatercolor.png'), // Replace with an appropriate icon
         tooltip: 'Global Multi-Resolution Topography (GMRT) provides global bathymetric data.\nhttps://www.gmrt.org/',
         creationFunction: () => new Cesium.WebMapServiceImageryProvider({
             url: 'https://www.gmrt.org/services/mapserver/wms_merc?',
@@ -48,6 +48,28 @@ const [open, setOpen] = useState(false);
             },
             tilingScheme: new Cesium.WebMercatorTilingScheme(), // Ensure correct projection
           })
+      }),
+      new Cesium.ProviderViewModel({
+        name: 'Blue Topo WMS',
+        iconUrl: Cesium.buildModuleUrl('Widgets/Images/ImageryProviders/blueMarble.png'),
+        tooltip: 'NOAA NowCOAST Blue Topography via WMS',
+        creationFunction: () =>
+          new Cesium.WebMapServiceImageryProvider({
+            url: 'https://nowcoast.noaa.gov/geoserver/bluetopo/wms?',
+            layers: 'bathymetry', // Use the bathymetry layer as provided in the URL example.
+            parameters: {
+              service: 'WMS',
+              version: '1.3.0',
+              request: 'GetMap',
+              styles: 'nbs_elevation', // The style specified in your URL.
+              format: 'image/png8',  // PNG8 is used in the example.
+              transparent: true,
+              // The CRS parameter is automatically applied by Cesium when tilingScheme is provided.
+            },
+            tilingScheme: new Cesium.WebMercatorTilingScheme(),
+            maximumLevel: 19,
+            credit: 'NOAA NowCOAST',
+          }),
       }),
     ];
 
