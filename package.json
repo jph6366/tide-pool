@@ -33,11 +33,13 @@
     "@reduxjs/toolkit": "^1.9.2",
     "@tanstack/query-core": "^5.60.6",
     "@types/geojson": "^7946.0.14",
+    "@types/react-map-gl": "^6.1.7",
     "@vis.gl/react-google-maps": "latest",
     "arc": "^0.1.4",
     "arktype": "^2.0.0-rc.24",
     "billboard.js": "^3.14.3",
     "buffer": "^6.0.3",
+    "cesium": "^1.126.0",
     "flag-icons": "^7.2.3",
     "geotiff": "^2.1.3",
     "i18n-iso-countries": "^7.13.0",
@@ -59,6 +61,7 @@
     "redux": "^4.2.1",
     "stream-browserify": "^3.0.0",
     "typesafe-actions": "^5.1.0",
+    "vite-plugin-static-copy": "^2.2.0",
     "webr": "^0.3.3",
     "wrangler": "^3.57.1"
   },
@@ -82,7 +85,7 @@
     "@types/react-dom": "^18.3.1",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
-    "@vitejs/plugin-react": "^3.0.0",
+    "@vitejs/plugin-react": "^4.0.0",
     "@vitest/coverage-v8": "^2.1.8",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.0.0",
@@ -97,7 +100,7 @@
     "storybook": "^8.4.6",
     "tailwindcss": "^3.4.3",
     "typescript": "^4.9.3",
-    "vite": "^4.0.0",
+    "vite": "^5.0.0",
     "vitest": "^2.1.8"
   }
 }

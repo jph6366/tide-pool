@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
 import { useCallback, useEffect, useState } from 'react';
-import { ControlPosition, MapRef, useControl, MapInstance } from 'react-map-gl';
+import { ControlPosition, MapRef, useControl, MapInstance } from 'react-map-gl/mapbox';
 import GMRTPolylineToolMode, { profileAtom } from '../GeodesicDrawMode';
 import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 import arc from 'arc';
@@ -94,7 +94,6 @@ const [features, setFeatures] = useState({});
 
   function DrawControl(props: DrawControlProps) {
 
-    // @ts-expect-error expect
       useControl<MapboxDraw>(
         () => new MapboxDraw(props),
         ({map}: {map: MapRef}) => {

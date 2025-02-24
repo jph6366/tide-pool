@@ -1,6 +1,6 @@
 import React, { forwardRef, useImperativeHandle } from 'react';
 import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import { useControl, ControlPosition, MapRef } from 'react-map-gl';
+import { useControl, ControlPosition, MapRef } from 'react-map-gl/mapbox';
 
 type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
   position: ControlPosition;
@@ -11,7 +11,7 @@ type DrawControlProps = ConstructorParameters<typeof MapboxDraw>[0] & {
 
 // Use forwardRef to expose the MapboxDraw instance to the parent
 const DrawControl = forwardRef<MapboxDraw, DrawControlProps>((props, ref) => {
-  // @ts-expect-error expects react-map-gl MapInstance but we reference mapboxgl.Map instance
+  
   const draw = useControl<MapboxDraw>(  
     () => new MapboxDraw(props),
     ({ map }) => {
