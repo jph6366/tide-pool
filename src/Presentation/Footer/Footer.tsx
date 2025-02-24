@@ -9,15 +9,15 @@ export default function Footer() {
 
                 <div className="mt-16 border-t border-gray-100 pt-8">
                                     <p className="mt-4 text-center text-gray-500 lg:text-left lg:text-sm">
-                    This web site and its downloaded products are designed 
-                    for both public and academic use, and are licensed under 
-                    a <a className="text-blue-900" href="https://creativecommons.org/licenses/by/4.0/">Creative Commons Attribution 4.0 International (CC BY 4.0) License.</a>
+                                    This web site is designed for both public and academic use. Data and metadata are is licensed under 
+                    a <a className="text-blue-900" href="https://creativecommons.org/licenses/by-nc-sa/3.0/us/"> Creative Commons Attribution-Noncommercial-Share Alike 3.0 United States License.</a>
+
                     </p>
                     <br/>
                 <p className="text-center text-xs/relaxed text-gray-500">
 
 
-                    © 2023-2024. Jackson Hardee - All rights reserved.
+                © 2008-2025, Marine Geoscience Data System - All Rights Reserved.
 
 
                 </p>

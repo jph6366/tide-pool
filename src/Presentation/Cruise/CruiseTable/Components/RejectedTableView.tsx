@@ -184,11 +184,11 @@ export default function RejectedTableView( {
                         </tr>
                     </thead>
                     <tbody>
-                        {data.length != 0 && data.map((cruise: Cruise, i:number) => {
+                        {/* {data.length != 0 && data.map((cruise: Cruise, i:number) => {
                             return (
                                 <CruiseView key={i} cruise={cruise} />
                             );
-                        })}
+                        })} */}
                     </tbody>
                 </table>) : (
                         <div className="text-2xl font-extrabold">No cruise data available (yet).</div>

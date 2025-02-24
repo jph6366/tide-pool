@@ -5,9 +5,16 @@ import moment from 'moment';
 import { useState } from 'react';
 import * as countries from 'i18n-iso-countries';
 import * as en from  'i18n-iso-countries/langs/en.json';
+import ElevationDataSourceImpl from '@/Data/DataSource/API/GMRT/ElevationDataSourceImpl';
+import { ElevationRepositoryImpl } from '@/Data/Repository/ElevationRepositoryImpl';
+import { GetElevationPoint } from '@/Domain/UseCase/getElevationPoint';
+import ProfileDataSourceImpl from '@/Data/DataSource/API/GMRT/ProfileDataSourceImpl';
+import { GetElevationProfile } from '@/Domain/UseCase/getElevationProfile';
+import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 
 
 export default function ViewModel() {
+    const [latLong, setLatLong] = useState([])
     const [caseSensitive, setCase] = useState(true);
     const [cruiseStatus, setStatus] =  useAtom(cruiseStatusAtom);
     const [isOpen, setIsOpen] = useState(false);
@@ -71,6 +78,22 @@ export default function ViewModel() {
         const cc = countries.getAlpha2Code(name, 'en')?.toLowerCase() as string;
         return cc
     }
+
+    async function getElevationPoint(lat: number, long: number) {
+        const elevationDataSourceImpl = new ElevationDataSourceImpl();
+        const elevationRepositoryImpl = new  ElevationRepositoryImpl(elevationDataSourceImpl);
+        const getElevationPointUseCase = new GetElevationPoint(elevationRepositoryImpl)
+        const point = await getElevationPointUseCase.invoke(lat, long);
+        return point
+    }
+
+    async function getElevationProfile(coordinates:Coordinate[]) {
+        const profileDataSourceImpl = new ProfileDataSourceImpl();
+        const profileRepositoryImpl = new ElevationRepositoryImpl(profileDataSourceImpl);
+        const getElevationProfileUseCase = new GetElevationProfile(profileRepositoryImpl);
+        const profile = await getElevationProfileUseCase.invoke(coordinates);
+        return profile
+    }
       
 
     return {
@@ -84,7 +107,9 @@ export default function ViewModel() {
         cruiseStatus, setStatus,
         isOpen, setIsOpen,
         filter, setFilter,
-        caseSensitive, setCase
+        caseSensitive, setCase,
+        getElevationPoint,
+        getElevationProfile
     };
     
 

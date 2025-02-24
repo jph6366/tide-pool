@@ -21,7 +21,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "types": ["vitest/globals"]
+    "typeRoots": ["./src/types/"],
+    // "types": ["vitest/globals"],
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

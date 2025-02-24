@@ -1,17 +1,19 @@
+import { Feature, LineString } from 'geojson';
 import { ElevationProfile } from '../Model/Elevation';
-import { ProfileRepository } from '../Repository/ElevationRepository';
+import { ElevationRepository } from '../Repository/ElevationRepository';
+import { Coordinate } from '@/Data/DataSource/API/Parameter/CoordinateParameter';
 
 export interface GetElevationProfileUseCase {
-    invoke: (startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number) => Promise<ElevationProfile>
+    invoke: (coordinates:Coordinate[]) => Promise<ElevationProfile>
 }
 
 export class GetElevationProfile implements GetElevationProfileUseCase {
-    private elevationRepo: ProfileRepository
-    constructor(_elevationRepo: ProfileRepository) {
+    private elevationRepo: ElevationRepository
+    constructor(_elevationRepo: ElevationRepository) {
         this.elevationRepo = _elevationRepo
     }
 
-    async invoke(startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number) {
-        return this.elevationRepo.getElevation(startLatitude, startLongitude, endLatitude, endLongitude);
+    async invoke(coordinates:any) {
+        return this.elevationRepo.getProfileElevation(coordinates);
     }
 }

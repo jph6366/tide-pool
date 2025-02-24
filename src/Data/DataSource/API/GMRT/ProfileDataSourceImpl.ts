@@ -2,23 +2,32 @@ import { ElevationProfile } from '@/Domain/Model/Elevation';
 import { Coordinate } from '../Parameter/CoordinateParameter';
 import { ElevationDataSource } from '../../ElevationDataSource';
 
-interface ProfileDataSource extends Omit<ElevationDataSource, 'getElevation'> {
-    getElevation(startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number): Promise<ElevationProfile>;
-}
+export default class ProfileDataSourceImpl implements ElevationDataSource {
+    getElevation(latitude: number, longitude: number): Promise<number> {
+        throw new Error('Method not implemented.');
+    }
 
 
-export default class ProfileDataSourceImpl implements ProfileDataSource {
+    async getProfile(coordinates:Coordinate[]): Promise<ElevationProfile> {
+        
+        if (coordinates.length < 2) {
+            throw new Error('At least two coordinates are required to create a path.');
+        }
 
-
-    async getElevation(startLatitude: number, startLongitude: number, endLatitude: number, endLongitude: number): Promise<ElevationProfile> {
-
-        let coord: Coordinate = { latitude: startLatitude, longitude: startLongitude};
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        coord = { latitude: endLatitude, longitude: endLongitude};
+        // Convert coordinates to the boundspath format
+        const boundspath = encodeURIComponent(
+            JSON.stringify(coordinates
+                .map((coord: 
+                    { 
+                        longitude: { toString: () => any; }; 
+                        latitude: { toString: () => any; }; 
+                    }
+            ) => [coord.longitude.toString(), coord.latitude.toString()]))
+        );
 
 
         const baseUrl = 'https://www.gmrt.org/services/ProfileServer';
-        const profileUrl = `${baseUrl}?start_latitude=${startLatitude}&start_longitude=${startLongitude}&end_latitude=${endLatitude}&end_longitude=${endLongitude}&format=geojson`;
+        const profileUrl = `${baseUrl}?boundspath=${boundspath}`;
 
         try {
             const res: Response = await fetch(profileUrl);
@@ -27,7 +36,7 @@ export default class ProfileDataSourceImpl implements ProfileDataSource {
                 throw new Error(`Error fetching data: ${res.statusText}`)
             }
 
-            return await res.json() as ElevationProfile;
+            return await res.json();
             
         } catch(error) {
             console.error('Error fetching GMRT ProfileServer: ', error);

@@ -2,8 +2,12 @@
 
 ## About
 
-Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 18](https://reactjs.org/).
-- The goal of this project is to create repositories  of direct links to public federal data with provided select, search, filter, and various display options.
+Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 19](https://reactjs.org/).
+- The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend by integrating open source web gis technologies.
+- Some other modern iterations of public-facing applications/tools that utilize GMRT-like web maps and tools.
+  - Bedrock Ocean Exploration - [Mission](https://www.bedrockocean.com/mission) - [Mosaic](https://mosaic.bedrockocean.com/)
+  - Seabed 2030 - [Mission](https://ccom.unh.edu/project/bathymetry-globe) - [BathyGlobe](https://seabed2030.org/)
+  - NOAA Digital Coast - [Mission](https://coast.noaa.gov/digitalcoast/about/)
 
 **Noteworthy Tooling Included:**
 
@@ -12,8 +16,17 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [TailwindCSS](https://tailwindcss.com) - CSS utilities
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
 
-  [Global Multi-Resolution Topography Data Synthesis](https://www.gmrt.org) is a multi-resolutional compilation of edited multibeam sonar data collected by scientists and institutions worldwide, that is reviewed, processed and gridded by the GMRT Team and merged into a single continuously updated compilation of global elevation data. The synthesis began in 1992 as the Ridge Multibeam Synthesis (RMBS), was expanded to include multibeam bathymetry data from the Southern Ocean, and now includes bathymetry from throughout the global and coastal oceans.   [GMRT Web Services](https://www.gmrt.org/services/index.php)
+**Original Tooling In [GMRTMapTool](https://www.gmrt.org/GMRTMapTool/):**
 
+- JQuery
+- OpenLayers
+- Google Maps
+- Google Charts
+
+
+**Data and Metadata Provided by:**
+
+  [Global Multi-Resolution Topography Data Synthesis](https://www.gmrt.org) is a multi-resolutional compilation of edited multibeam sonar data collected by scientists and institutions worldwide, that is reviewed, processed and gridded by the GMRT Team and merged into a single continuously updated compilation of global elevation data. The synthesis began in 1992 as the Ridge Multibeam Synthesis (RMBS), was expanded to include multibeam bathymetry data from the Southern Ocean, and now includes bathymetry from throughout the global and coastal oceans.
 
   
 ## Developing
