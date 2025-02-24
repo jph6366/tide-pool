@@ -10,19 +10,8 @@ export class CruiseRepositoryImpl implements CruiseRepository {
     }
 
 
-    async getCruises(): Promise<Cruise[]> {
-        return this.datasource.getCruises();
+    async getCruises(status: string): Promise<Cruise[]> {
+        return this.datasource.getCruises(status);
     }
 
-    async sortCruises(sort: string): Promise<Cruise[]> {
-        return this.datasource.sortCruises(sort);
-    }
-
-    async setCruises(): Promise<void> {
-        return this.datasource.setCruises();
-    }
-
-    getAggregateTotalArea(cruises: Cruise[]): Promise<number> {
-        return this.datasource.getAggregateTotalArea(cruises);
-    }
 }

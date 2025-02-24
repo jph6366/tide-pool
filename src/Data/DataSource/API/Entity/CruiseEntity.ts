@@ -1,3 +1,9 @@
+import { GetCruises } from '@/Domain/UseCase/getCruises';
+import { CruiseRepositoryImpl } from '@/Data/Repository/CruiseRepositoryImpl';
+import CruiseDataSourceImpl from '../GMRT/CruiseDataSourceImpl';
+import { atomWithCache } from 'jotai-cache';
+import { atom } from 'jotai';
+
 export interface CruiseEntity {
     entry_id: string
     survey_id: string
@@ -25,8 +31,50 @@ export interface CruiseEntity {
     is_rejected: string
     created: string
     device_make: string
-    device_model: number
+    device_model: string
     total_area: number
     track_length: number
     file_count: number
 }
+
+export enum CruiseStatus{
+    merged = '',
+    isRejected = '?is_rejected=true',
+    underReview = '?under_review=true'
+}
+
+export const cruiseStatusAtom = atom<CruiseStatus>(CruiseStatus.merged);
+
+
+const cruisesDataSourceImpl = new CruiseDataSourceImpl();
+const cruisesRepositoryImpl = new CruiseRepositoryImpl(cruisesDataSourceImpl);
+const getCruisesUseCase = new GetCruises(cruisesRepositoryImpl);
+
+// // // // // // // // // // // // // // // // // // // // // // // // 
+//      jotai-tanstack-query IMPLEMENTATION for future features if needed
+// 
+// export const CruiseAtom = atomWithQuery(() => ({
+//     queryKey: ['cruises'],
+//     queryFn: async (): Promise<CruiseEntity[]> => {
+//         return getCruisesUseCase.invoke()
+//     },
+// }))
+
+//      jotai-cache
+export const CruiseAtomWithCache = atomWithCache(
+    async (get) => {
+        return getCruisesUseCase.invoke(CruiseStatus.merged)
+    }
+);
+
+export const rejectedCruiseAtomWithCache = atomWithCache(
+    async (get) => {
+        return getCruisesUseCase.invoke(CruiseStatus.isRejected)
+    }
+);
+
+export const underReviewCruiseAtomWithCache = atomWithCache(
+    async (get) => {
+        return getCruisesUseCase.invoke(CruiseStatus.underReview)
+    }
+);
