@@ -50,6 +50,18 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 [React Style Guide](https://mkosir.github.io/typescript-style-guide/#appendix---react)
 
 
+### Solar System Exploration, 1950s – 1960s
+
+- [ ] Refactor Components and File Structure to Scream
+  - 3D Map Projection & Scene Rendering
+  - 2D Map Projection & Map Editor Tools
+  - OGC & REST Service Integration
+- [ ] Deploy a React component library on top of gle-scene-components
+  - Bathymetric Globe w/ 3D Scenes
+  - Bathymetric Web Mercator Map w/ Map Editing
+- [ ] Integrate 3D Models from 3DMR a Repository for 3D models, and their metadata, for use by the OSM community
+  -  Incorporate SPZ, glTF, and OBJ
+
 ## Diagrams
 
   ![image](https://github.com/jph6366/tide-pool/blob/bathy-req/flowofcontrol.drawio.png)
