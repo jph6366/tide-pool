@@ -1,0 +1,5 @@
+<IfModule mod_mime.c>
+    AddType application/javascript .js
+    AddType application/json .json
+    AddType image/png .png
+</IfModule>

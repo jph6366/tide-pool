@@ -1,0 +1,6 @@
+/cesiumStatic/*  /cesiumStatic/:splat  200
+/assets/*  /assets/:splat  200
+/Workers/* /Workers/:splat 200
+/ThirdParty/* /ThirdParty/:splat 200
+/Widgets/* /Widgets/:splat 200
+/* /index.html 200

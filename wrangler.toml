@@ -1,0 +1,16 @@
+name = "tide-pool"
+main = "src/index.html"
+
+compatibility_date = "2025-03-17"
+
+# Add the unstable flags here:
+compatibility_flags = [
+  "unstable_allowDynamicModuleImports",
+  "unstable_allowAllRuntimeDependencies"
+]
+
+workers_dev = true
+
+[build]
+command = "npm run dev"
+

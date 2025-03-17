@@ -6,17 +6,15 @@ import path from 'path';
 const cesiumSource = 'node_modules/cesium/Build/Cesium';
 // This is the base url for static files that CesiumJS needs to load.
 // Set to an empty string to place the files at the site's root path
-const cesiumBaseUrl = 'cesiumStatic';
+const cesiumBaseUrl = 'assets';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(),
     viteStaticCopy({
       targets: [
-        { src: `${cesiumSource}/ThirdParty`, dest: cesiumBaseUrl },
-        { src: `${cesiumSource}/Workers`, dest: cesiumBaseUrl },
-        { src: `${cesiumSource}/Assets`, dest: cesiumBaseUrl },
-        { src: `${cesiumSource}/Widgets`, dest: cesiumBaseUrl },
+        { src: `${cesiumSource}/**`, dest: cesiumBaseUrl },
+
       ],
     }),
   ],
@@ -27,8 +25,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
-      '@vis.gl/react-google-maps/examples.js':
-      'https://visgl.github.io/react-google-maps/scripts/examples.js',
       stream: 'stream-browserify'
     },
   },
