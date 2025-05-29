@@ -5,6 +5,7 @@ Every Component in a Demo [tide-pool](https://tide-pool.pages.dev/)
 
 Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React 19](https://reactjs.org/).
 - The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend by integrating open source web gis technologies.
+- I also included BlueTopo's Hi-Res TopoBathy data as a persistent layer on top GMRT data in a Globe View using CesiumJS.
 - Some other modern iterations of public-facing applications/tools that utilize GMRT-like web maps and tools.
   - Bedrock Ocean Exploration - [Mission](https://www.bedrockocean.com/mission) - [Mosaic](https://mosaic.bedrockocean.com/)
   - Seabed 2030 - [Mission](https://ccom.unh.edu/project/bathymetry-globe) - [BathyGlobe](https://seabed2030.org/)
