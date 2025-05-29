@@ -16,6 +16,8 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [Jotai](https://jotai.org/) - Atomic approach to global React state management
 - [TailwindCSS](https://tailwindcss.com) - CSS utilities
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
+  - [Mapbox-GL-Draw](https://github.com/mapbox/mapbox-gl-draw)
+  - [MapLibre-Grid](https://github.com/maptiler/maplibre-grid)
 - [Storybook](https://67d84670b91c3a0fa31f09e3-ddbeapkbul.chromatic.com/) - View published Storybook here for testing UI components
 
 **Original Tooling In [GMRTMapTool](https://www.gmrt.org/GMRTMapTool/):**
@@ -51,18 +53,12 @@ The dev server will launch in your browser at [localhost:4444](localhost:4444) a
 
 [React Style Guide](https://mkosir.github.io/typescript-style-guide/#appendix---react)
 
-
-### Solar System Exploration, 1950s – 1960s
-
-- [ ] Refactor Components and File Structure to Scream
+TODO  
+- [ ] Refactor Components and File Structure to Scream Underwater Topographic Data & Tools
   - 3D Map Projection & Scene Rendering
   - 2D Map Projection & Map Editor Tools
   - OGC & REST Service Integration
-- [ ] Deploy a React component library on top of gle-scene-components
-  - Bathymetric Globe w/ 3D Scenes
-  - Bathymetric Web Mercator Map w/ Map Editing
-- [ ] Integrate 3D Models from 3DMR a Repository for 3D models, and their metadata, for use by the OSM community
-  -  Incorporate SPZ, glTF, and OBJ
+
 
 ## Diagrams
 
