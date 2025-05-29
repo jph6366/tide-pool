@@ -18,7 +18,7 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
   - [Mapbox-GL-Draw](https://github.com/mapbox/mapbox-gl-draw)
   - [MapLibre-Grid](https://github.com/maptiler/maplibre-grid)
-- [Storybook](https://67d84670b91c3a0fa31f09e3-ddbeapkbul.chromatic.com/) - View published Storybook here for testing UI components
+- [Storybook](https://67d84670b91c3a0fa31f09e3-ddbeapkbul.chromatic.com/) <<<< View published Storybook here (used for testing isolated UI components)
 
 **Original Tooling In [GMRTMapTool](https://www.gmrt.org/GMRTMapTool/):**
 
