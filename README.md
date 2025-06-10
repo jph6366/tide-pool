@@ -1,7 +1,7 @@
 # Tide-Pool :ocean:
 
 ## About
-Every Component in a Demo [tide-pool](https://tide-pool.pages.dev/)
+Every Component in a Demo [tide-pool](https://tide-pool.pages.dev/) Storybooked Component List [storybook-tidepool](https://67d84670b91c3a0fa31f09e3-ddbeapkbul.chromatic.com/)
 
 Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typescriptlang.org) using [React](https://reactjs.org/).
 - The goal of this project is to re-implement [GMRT MapTool](https://github.com/mgds/gmrtMapTool) ( try it out [here](https://www.gmrt.org/GMRTMapTool/)) in the modern web development toolings below and further extend by integrating open source web gis technologies.
@@ -19,7 +19,7 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
 - [React-Map-GL](https://visgl.github.io/react-map-gl/) - React Wrapper for [Mapbox-GL](https://docs.mapbox.com/mapbox-gl-js)
   - [Mapbox-GL-Draw](https://github.com/mapbox/mapbox-gl-draw)
   - [MapLibre-Grid](https://github.com/maptiler/maplibre-grid)
-- [Storybook](https://67d84670b91c3a0fa31f09e3-ddbeapkbul.chromatic.com/) <<<< View published Storybook here (used for testing isolated UI components)
+- [Storybook](https://storybook.js.org/) 
 
 **Original Tooling In [GMRTMapTool](https://www.gmrt.org/GMRTMapTool/):**
 
