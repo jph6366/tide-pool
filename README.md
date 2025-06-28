@@ -36,6 +36,8 @@ Tide-pool is a sandbox BRX project, built in [Typescript 4.9](https://www.typesc
   
 ## Developing
 
+Truly needs a lot of work done to be more presentable and code less **hacky**, so eventually this code will be refactored to somewhere else for something else... 
+
 The project requires Node 18 to be installed on your local machine, refer to npm for [download instructions](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm).
 
 1. Install project dependencies
